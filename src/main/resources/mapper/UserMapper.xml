@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.graduation.mapper.UserMapper">
+
+    <!-- 用户对象映射 -->
+    <resultMap type="com.graduation.domain.User" id="userMap">
+        <id column="id" property="id"/>
+        <id column="username" property="username"/>
+        <id column="user_password" property="userPassword"/>
+        <id column="user_phone" property="userPhone"/>
+        <id column="admin_flg" property="adminFlg"/>
+        <id column="create_time" property="createTime"/>
+        <id column="update_time" property="updateTime"/>
+    </resultMap>
+
+
+    <select id="getUser" resultMap="userMap">
+        select * from user
+        where username = #{username}
+          and admin_flg = #{adminFlg}
+    </select>
+</mapper>

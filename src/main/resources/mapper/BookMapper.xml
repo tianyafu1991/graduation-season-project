@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.graduation.mapper.BookMapper">
+
+    <!-- 用户对象映射 -->
+    <resultMap type="com.graduation.domain.Book" id="bookMap">
+        <id column="id" property="id"/>
+        <id column="book_no" property="bookNo"/>
+        <id column="book_name" property="bookName"/>
+        <id column="book_author" property="bookAuthor"/>
+        <id column="book_publish" property="bookPublish"/>
+        <id column="book_category" property="bookCategory"/>
+        <id column="book_price" property="bookPrice"/>
+        <id column="book_introduction" property="bookIntroduction"/>
+        <id column="category_name" property="categoryName"/>
+        <id column="create_time" property="createTime"/>
+        <id column="update_time" property="updateTime"/>
+    </resultMap>
+
+<sql id = "getBooksWhere">
+<where>
+1=1
+<if test="bookNo != null and bookNo != ''">
+and a.book_no like '%' #{bookNo} '%'
+</if>
+<if test="bookName != null and bookName != ''">
+and a.book_name like '%' #{bookName} '%'
+</if>
+<if test="bookAuthor != null and bookAuthor != ''">
+and a.book_author like '%' #{bookAuthor} '%'
+</if>
+<if test="bookPublish != null and bookPublish != ''">
+and a.book_publish like '%' #{bookPublish} '%'
+</if>
+<if test="bookCategory != null and bookCategory != ''">
+and b.category_name like '%' #{bookCategory} '%'
+</if>
+</where>
+</sql>
+
+    <!-- 新增书籍 -->
+    <insert id="addBook">
+        insert into book(book_no,book_name,book_author,book_publish,book_category,book_price,book_introduction)
+        values(#{bookNo},#{bookName},#{bookAuthor},#{bookPublish},#{bookCategory},#{bookPrice},#{bookIntroduction})
+    </insert>
+    <update id="updateBook">
+        UPDATE book
+        <trim prefix="set" suffixOverrides=",">
+            <if test="bookNo!=null">book_no=#{bookNo},</if>
+            <if test="bookName!=null">book_name=#{bookName},</if>
+            <if test="bookAuthor!=null">book_author=#{bookAuthor},</if>
+            <if test="bookPublish!=null">book_publish=#{bookPublish},</if>
+            <if test="bookCategory!=null">book_category=#{bookCategory},</if>
+            <if test="bookPrice!=null">book_price=#{bookPrice},</if>
+            <if test="bookIntroduction!=null">book_introduction=#{bookIntroduction},</if>
+        </trim>
+        WHERE id=#{id}
+
+    </update>
+    <delete id="deleteBooksByIds">
+        delete from book where id in (${ids})
+    </delete>
+
+    <select id="getBookLists" resultMap="bookMap">
+select
+    a.id,a.book_no,a.book_name,a.book_author,a.book_publish,a.book_price,a.book_introduction,b.category_name
+from
+book a
+inner join
+book_category b
+on a.book_category = b.category_id
+<include refid="getBooksWhere"></include>
+order by a.update_time desc
+limit #{start},#{limit}
+</select>
+<select id="getTotalCount" resultType="java.lang.Long">
+select
+count(1) cnt
+from
+book a
+inner join
+book_category b
+on a.book_category = b.category_id
+<include refid="getBooksWhere"></include>
+</select>
+<select id="getBooksById" resultMap="bookMap">
+select
+a.id,a.book_no,a.book_name,a.book_author,a.book_publish,a.book_price,a.book_category,a.book_introduction,b.category_name
+from
+book a
+inner join
+book_category b
+on a.book_category = b.category_id
+where a.id = #{id}
+</select>
+</mapper>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/layuimini/lib/layui-v2.6.3/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/layuimini/css/layuimini.css?v=2.0.4.2}" media="all">
+    <link rel="stylesheet" th:href="@{/layuimini/css/themes/default.css}" media="all">
+    <link rel="stylesheet" th:href="@{/layuimini/lib/font-awesome-4.7.0/css/font-awesome.min.css}" media="all">
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">编号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="bookNo" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">书名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="bookName" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">作者</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="bookAuthor" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">出版社</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="bookPublish" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">分类</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="bookCategory" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-normal"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
+                        </div>
+
+
+                    </div>
+                </form>
+
+
+            </div>
+        </fieldset>
+
+        <table id="table-book" lay-filter="test"></table>
+
+    </div>
+</div>
+
+<script th:src="@{/layuimini/lib/layui-v2.6.3/layui.js}" charset="utf-8"></script>
+<script th:src="@{/layuimini/js/lay-config.js?v=2.0.0}" charset="utf-8"></script>
+<script th:inline="javascript">
+
+    // var ctxPath=[[${#httpServletRequest.getContextPath()}]];
+    var ctxPath=[[@{/}]];
+    console.log("ctxPath:" + ctxPath);
+
+    layui.use(['table','form'], function(){
+        var table = layui.table;
+        var form = layui.form;
+
+        //书籍表格渲染
+        table.render({
+            elem: '#table-book'
+            ,url: ctxPath + 'book/getBookLists' //数据接口
+            // ,url: '/layuimini/api/aaa.json' //数据接口
+            ,page: true //开启分页
+            ,limits: [5,10,20,30,50]
+            ,cols: [[ //表头
+                ,{field: 'bookNo', title: '编号', width:80, sort: true ,align: 'center'}
+                ,{field: 'bookName', title: '书名', width:140,align: 'center'}
+                ,{field: 'bookAuthor', title: '作者', width:80, sort: true,align: 'center'}
+                ,{field: 'bookPublish', title: '出版社', width:120 ,align: 'center'}
+                ,{field: 'categoryName', title: '分类', width: 80, sort: true,align: 'center'}
+                ,{field: 'bookPrice', title: '价格', width: 60,align: 'center'}
+                ,{field: 'bookIntroduction', title: '介绍'}
+                ,{title: '操作', width: 80}
+            ]]
+            ,parseData: function(res){ //res 即为原始返回的数据
+                return {
+                    "code": res.code, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.count, //解析数据长度
+                    "data": res.data //解析数据列表
+                };
+            }
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            // var result = JSON.stringify(data.field);
+            console.log('data:' + data.field)
+
+
+            table.reload('table-book', {
+                where: { //设定异步数据接口的额外参数，任意设
+                    bookNo: data.field.bookNo
+                    ,bookName: data.field.bookName
+                    ,bookAuthor: data.field.bookAuthor
+                    ,bookPublish: data.field.bookPublish
+                    ,bookCategory: data.field.bookCategory
+                }
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            }); //只重载数据
+            
+            return false;
+        });
+
+    });
+</script>
+
+</body>
+</html>
