@@ -1,23 +1,24 @@
 package com.graduation.controller;
 
 import com.graduation.common.CommonResponse;
+import com.graduation.domain.Book;
 import com.graduation.domain.User;
+import com.graduation.domain.param.BookParams;
+import com.graduation.domain.param.UserParams;
 import com.graduation.service.UserService;
 import com.wf.captcha.utils.CaptchaUtil;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("user")
 public class UserController {
 
 
@@ -46,6 +47,24 @@ public class UserController {
         }
         return CommonResponse.errorInstance("用户名或密码错误 请重新登录");
 
+    }
+
+
+
+    /**
+     * 按照条件获取用户列表
+     * @param userParams
+     * @return
+     */
+    @GetMapping("/getUserLists")
+    @ResponseBody
+    public CommonResponse<List<Book>> getUserLists(UserParams userParams){
+        // 按照查询条件分页查询用户
+        List<User> users = userService.getUserLists(userParams);
+        // 按照查询条件 获取符合条件的所有数据的总数
+        Long totalCount = userService.getTotalCount(userParams);
+        CommonResponse response = CommonResponse.successInstance(users, totalCount);
+        return response;
     }
 
 }

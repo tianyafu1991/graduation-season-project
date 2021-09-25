@@ -13,10 +13,45 @@
         <id column="update_time" property="updateTime"/>
     </resultMap>
 
+    <sql id = "getUsersWhere">
+        <where>
+            1=1
+            <if test="username != null and username != ''">
+                and a.username like '%' #{username} '%'
+            </if>
+            <if test="userPhone != null and userPhone != ''">
+                and a.user_phone like '%' #{userPhone} '%'
+            </if>
+            <if test="adminFlg != null and adminFlg != ''">
+                and a.admin_flg = #{adminFlg}
+            </if>
+        </where>
+    </sql>
+
 
     <select id="getUser" resultMap="userMap">
         select * from user
         where username = #{username}
           and admin_flg = #{adminFlg}
     </select>
+
+<!-- 按照查询条件分页查询用户 -->
+<select id="getUserLists" resultMap="userMap">
+select
+a.id,a.username,a.user_phone,a.admin_flg
+,date_format(a.create_time,'%Y-%m-%d %H:%i:%s') create_time , date_format(a.update_time,'%Y-%m-%d %H:%i:%s') update_time
+from
+user a
+<include refid="getUsersWhere"></include>
+order by a.update_time desc
+limit #{start},#{limit}
+</select>
+<!-- 按照查询条件 获取符合条件的所有数据的总数 -->
+<select id="getTotalCount" resultType="java.lang.Long">
+select
+count(1) cnt
+from
+user a
+<include refid="getUsersWhere"></include>
+</select>
 </mapper>

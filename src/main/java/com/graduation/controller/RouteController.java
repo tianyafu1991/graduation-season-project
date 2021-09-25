@@ -70,13 +70,7 @@ public class RouteController {
     // admin用户的 书籍类别管理 页面跳转
     @GetMapping("adminCategoryList")
     public String adminCategoryList(){
-        return "admin/categoryList";
-    }
-
-    // admin用户的 用户管理 页面跳转
-    @GetMapping("adminUserList")
-    public String adminUserList(){
-        return "admin/userList";
+        return "admin/bookCategoryList";
     }
 
 
@@ -120,6 +114,12 @@ public class RouteController {
         BookCategory bookCategory = bookService.getBookCategoryById(categoryId);
         model.addAttribute("bookCategory",bookCategory);
         return "admin/bookCategoryEdit";
+    }
+
+    // admin用户的 用户管理 页面跳转
+    @GetMapping("adminUserList")
+    public String adminUserList(){
+        return "admin/userList";
     }
 
 }

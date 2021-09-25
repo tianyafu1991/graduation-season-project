@@ -1,6 +1,7 @@
 package com.graduation.service.impl;
 
 import com.graduation.domain.User;
+import com.graduation.domain.param.UserParams;
 import com.graduation.mapper.UserMapper;
 import com.graduation.service.UserService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,6 +18,28 @@ public class UserServiceImpl implements UserService {
     @Resource
     private UserMapper userMapper;
 
+
+    /**
+     * 按照查询条件分页查询用户
+     *
+     * @param userParams
+     * @return
+     */
+    @Override
+    public List<User> getUserLists(UserParams userParams) {
+        return userMapper.getUserLists(userParams);
+    }
+
+    /**
+     * 按照查询条件 获取符合条件的所有数据的总数
+     *
+     * @param userParams
+     * @return
+     */
+    @Override
+    public Long getTotalCount(UserParams userParams) {
+        return userMapper.getTotalCount(userParams);
+    }
 
     /**
      * 用户登录
