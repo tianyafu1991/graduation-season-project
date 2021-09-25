@@ -1,6 +1,5 @@
 package com.graduation.controller;
 
-import com.graduation.common.CommonResponse;
 import com.graduation.domain.Book;
 import com.graduation.domain.BookCategory;
 import com.graduation.domain.User;
@@ -169,6 +168,12 @@ public class RouteController {
         user.setUserPassword(null);
         model.addAttribute("user",user);
         return "admin/userEdit";
+    }
+
+    // admin用户的 书籍查询 页面跳转
+    @GetMapping("userBookList")
+    public String userBookList(){
+        return "user/bookList";
     }
 
 }

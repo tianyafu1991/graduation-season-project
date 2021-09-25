@@ -26,6 +26,9 @@
         <div class="layui-logo layuimini-logo"></div>
 
         <div class="layuimini-header-content">
+
+            <span id="span-display-none-id" th:text="${session.user.id}"></span>
+
             <a>
                 <div class="layuimini-tool"><i title="展开" class="fa fa-outdent" data-side-fold="1"></i></div>
             </a>
@@ -42,13 +45,15 @@
                     <a href="javascript:;" data-check-screen="full"><i class="fa fa-arrows-alt"></i></a>
                 </li>
                 <li class="layui-nav-item layuimini-setting">
-                    <a href="javascript:;"><span th:text="${session.user.username}"></span>></a>
+                    <a href="javascript:;"><span id="user-name-span" th:text="${session.user.username}"></span>></a>
                     <dl class="layui-nav-child">
                         <dd>
-                            <a href="javascript:;" layuimini-content-href="page/user-setting.html" data-title="基本资料" data-icon="fa fa-gears">基本资料<span class="layui-badge-dot"></span></a>
+                            <a href="javascript:;" id="user-basic-info" data-title="基本资料" data-icon="fa fa-gears">基本资料<span class="layui-badge-dot"></span></a>
+<!--                            <a href="javascript:;" th:layuimini-content-href="@{/common/userSetting}" data-title="基本资料" data-icon="fa fa-gears">基本资料<span class="layui-badge-dot"></span></a>-->
                         </dd>
                         <dd>
-                            <a href="javascript:;" layuimini-content-href="page/user-password.html" data-title="修改密码" data-icon="fa fa-gears">修改密码</a>
+<!--                            <a href="javascript:;" th:layuimini-content-href="@{/common/userPassword}" data-title="修改密码" data-icon="fa fa-gears">修改密码</a>-->
+                            <a href="javascript:;" id="user-password" data-title="修改密码" data-icon="fa fa-gears">修改密码</a>
                         </dd>
                         <dd>
                             <hr>
@@ -113,6 +118,12 @@
 <script th:src="@{/layuimini/js/lay-config.js?v=2.0.0}" charset="utf-8"></script>
 <script th:inline="javascript">
     var ctxPath=[[${#httpServletRequest.getContextPath()}]];
+    var $=layui.$;
+
+    $(document).ready(function (){
+        $('#span-display-none-id').css('display','none');
+    });
+
     layui.use(['jquery', 'layer', 'miniAdmin','miniTongji'], function () {
         var $ = layui.jquery,
             layer = layui.layer,
@@ -142,10 +153,54 @@
             ],
         });
 
-        $('.login-out').on("click", function () {
-            layer.msg('退出登录成功', function () {
-                window.location = '../../static/layuimini/pages/login-3.html';
+
+        var username = $('#user-name-span').text()
+        console.log('获取到的username: ' + username)
+
+        // 修改密码监听
+        $('#user-password').on("click", function () {
+
+            var index = layer.open({
+                title: '修改密码',
+                type: 2,
+                shade: 0.2,
+                maxmin:true,
+                shadeClose: false,
+                area: ['100%', '100%'],
+                content: ctxPath + "common/userPassword/" + username,
             });
+            $(window).on("resize", function () {
+                layer.full(index);
+            });
+        });
+
+        // 基本资料监听
+        $('#user-basic-info').on("click", function () {
+
+            var index = layer.open({
+                title: '基本资料',
+                type: 2,
+                shade: 0.2,
+                maxmin:true,
+                shadeClose: false,
+                area: ['100%', '100%'],
+                content: ctxPath + "common/userSetting/" + username,
+            });
+            $(window).on("resize", function () {
+                layer.full(index);
+            });
+        });
+
+        // 退出登录监听
+        $('.login-out').on("click", function () {
+            var log_out_url = ctxPath + "logout"
+            $.get(log_out_url,function (response) {
+                layer.msg('退出登录成功', function () {
+                    window.location = '/';
+                });
+            })
+
+
         });
     });
 </script>

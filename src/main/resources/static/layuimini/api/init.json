@@ -22,28 +22,16 @@
           "target": "_self",
           "child": [
             {
-              "title": "借书记录",
+              "title": "图书借阅",
               "href": "/layuimini/page/user/book/borrow-list.html",
               "icon": "fa fa-book",
-              "target": "_self"
-            },
-            {
-              "title": "归还书籍",
-              "href": "page/welcome-2.html",
-              "icon": "fa fa-bookmark-o",
-              "target": "_self"
-            },
-            {
-              "title": "图书借阅",
-              "href": "page/welcome-3.html",
-              "icon": "fa fa-bookmark",
               "target": "_self"
             }
           ]
         },
         {
-          "title": "个人信息管理",
-          "href": "page/menu.html",
+          "title": "书籍查询",
+          "href": "userBookList",
           "icon": "fa fa-user",
           "target": "_self"
         }
