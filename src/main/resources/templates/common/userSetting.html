@@ -1,74 +1,119 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <title>基本资料</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" href="../lib/layui-v2.6.3/css/layui.css" media="all">
-    <link rel="stylesheet" href="../css/public.css" media="all">
+    <link rel="stylesheet" th:href="@{/layuimini/lib/layui-v2.6.3/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/layuimini/css/public.css}" media="all">
     <style>
-        .layui-form-item .layui-input-company {width: auto;padding-right: 10px;line-height: 38px;}
+        .layui-form-item .layui-input-company {
+            width: auto;
+            padding-right: 10px;
+            line-height: 38px;
+        }
     </style>
 </head>
 <body>
 <div class="layuimini-container">
     <div class="layuimini-main">
 
-        <div class="layui-form layuimini-form">
-            <div class="layui-form-item">
-                <label class="layui-form-label required">管理账号</label>
+        <div class="layui-form layuimini-form" th:object="${user}">
+
+            <div class="layui-form-item" id="form-display-none-id">
+                <label class="layui-form-label required">id</label>
                 <div class="layui-input-block">
-                    <input type="text" name="username" lay-verify="required" lay-reqtext="管理账号不能为空" placeholder="请输入管理账号"  value="admin" class="layui-input">
-                    <tip>填写自己管理账号的名称。</tip>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label required">手机</label>
-                <div class="layui-input-block">
-                    <input type="number" name="phone" lay-verify="required" lay-reqtext="手机不能为空" placeholder="请输入手机"  value="" class="layui-input">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">邮箱</label>
-                <div class="layui-input-block">
-                    <input type="email" name="email"  placeholder="请输入邮箱"  value="" class="layui-input">
-                </div>
-            </div>
-            <div class="layui-form-item layui-form-text">
-                <label class="layui-form-label">备注信息</label>
-                <div class="layui-input-block">
-                    <textarea name="remark" class="layui-textarea" placeholder="请输入备注信息"></textarea>
+                    <input type="text" th:field="*{id}" lay-verify="required" lay-reqtext="用户id不能为空"
+                           placeholder="请输入用户id" value="" class="layui-input">
                 </div>
             </div>
 
             <div class="layui-form-item">
+                <label class="layui-form-label required">用户名</label>
                 <div class="layui-input-block">
-                    <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
+                    <input type="text" th:field="*{username}" lay-verify="required" lay-reqtext="用户名不能为空"
+                           placeholder="请输入用户名" value="" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label required">手机号</label>
+                <div class="layui-input-block">
+                    <input type="number" th:field="*{userPhone}" lay-verify="required" lay-reqtext="手机号不能为空"
+                           placeholder="请输入手机号" value="" class="layui-input"></div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button id="save-btn" class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<script src="../lib/layui-v2.6.3/layui.js" charset="utf-8"></script>
-<script src="../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
-<script>
-    layui.use(['form','miniTab'], function () {
+<script th:src="@{/layuimini/lib/layui-v2.6.3/layui.js}" charset="utf-8"></script>
+<script th:src="@{/layuimini/js/lay-config.js?v=1.0.4}" charset="utf-8"></script>
+<script th:inline="javascript">
+
+    var ctxPath=[[@{/}]];
+
+    var $=layui.$;
+
+    $(document).ready(function (){
+        $('#form-display-none-id').css('display','none');
+    });
+
+    layui.use(['form', 'miniTab'], function () {
         var form = layui.form,
             layer = layui.layer,
             miniTab = layui.miniTab;
 
         //监听提交
         form.on('submit(saveBtn)', function (data) {
-            var index = layer.alert(JSON.stringify(data.field), {
-                title: '最终的提交信息'
-            }, function () {
-                layer.close(index);
-                miniTab.deleteCurrentByIframe();
+
+            // 当用户点击提交后  将按钮置为灰色不可点击  防止短时间内多次点击
+            $("#save-btn").attr("disabled", "disabled").addClass("layui-btn-disabled");
+
+            var json = JSON.stringify(data.field)
+            console.log('基本资料修改的json:' + json)
+            // 异步提交请求
+            // 将请求类型改为PUT提交
+            data.field._method = "PUT";
+
+            var url = ctxPath + "user/updateUser";
+
+            $.post(url, data.field, function (response) {
+                console.log(response)
+                if (0 == response.code) {
+                    // 提交成功后 提示成功  并需要关闭窗口 并且刷新表单数据
+                    layer.msg(response.msg, {icon: 6, time: 1000}, function () {
+                        // var log_out_url = ctxPath + "logout"
+                        // $.get(log_out_url, function (response) {
+                        //     layer.msg('请重新登录', function () {
+                        //         window.location = '/';
+                        //     });
+                        // })
+                    });
+                } else {
+                    $("#save-btn").removeAttr("disabled", "disabled").removeClass("layui-btn-disabled");
+                    layer.alert(response.msg, {icon: 5, anim: 6, title: "更新失败"});
+                }
             });
-            return false;
+            // 失败则提示错误信息 窗口不关闭
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
+
+        // form.on('submit(saveBtn)', function (data) {
+        //     var index = layer.alert(JSON.stringify(data.field), {
+        //         title: '最终的提交信息'
+        //     }, function () {
+        //         layer.close(index);
+        //         miniTab.deleteCurrentByIframe();
+        //     });
+        //     return false;
+        // });
 
     });
 </script>

@@ -1,6 +1,7 @@
 package com.graduation.service.impl;
 
 import com.graduation.domain.User;
+import com.graduation.domain.param.PasswordParams;
 import com.graduation.domain.param.UserParams;
 import com.graduation.mapper.UserMapper;
 import com.graduation.service.UserService;
@@ -20,6 +21,30 @@ public class UserServiceImpl implements UserService {
 
 
     /**
+     * 修改用户密码
+     *
+     * @param passwordParams
+     */
+    @Override
+    public void updateUserPassword(PasswordParams passwordParams) {
+        User user = new User();
+        user.setId(passwordParams.getId());
+        user.setUserPassword(passwordParams.getNewPassword());
+        userMapper.updateUser(user);
+    }
+
+    /**
+     * 根据用户名查询用户
+     *
+     * @param username
+     * @return
+     */
+    @Override
+    public User getUserByUserName(String username) {
+        return userMapper.getUserByUserName( username);
+    }
+
+    /**
      * 根据用户id查询用户信息
      *
      * @param id
@@ -27,7 +52,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User getUserById(Integer id) {
-        return userMapper.getUserById( id);
+        return userMapper.getUserById(id);
     }
 
     /**

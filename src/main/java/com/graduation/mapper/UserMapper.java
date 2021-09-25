@@ -21,4 +21,6 @@ public interface UserMapper {
     void updateUser(User user);
     // 根据用户id查询用户信息
     User getUserById(Integer id);
+    // 根据用户名查询用户
+    User getUserByUserName(String username);
 }

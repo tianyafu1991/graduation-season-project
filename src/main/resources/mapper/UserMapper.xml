@@ -72,10 +72,14 @@ user a
 </select>
 <select id="getUserById" resultMap="userMap">
 select
-a.id,a.username,a.user_phone
+a.id,a.username,a.user_password,a.user_phone,a.admin_flg,a.create_time,a.update_time
 from
 user a
 where 1=1
 and a.id = #{id}
 </select>
+    <!-- 根据用户名查询用户 -->
+    <select id="getUserByUserName" resultMap="userMap">
+        select * from user where username = #{username}
+    </select>
 </mapper>

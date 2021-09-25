@@ -44,14 +44,18 @@ public class RouteController {
     }
 
     // 跳转到修改密码页面
-    @GetMapping("common/userPassword")
-    public String userPassword(){
+    @GetMapping("common/userPassword/{username}")
+    public String userPassword(@PathVariable  String username,Model model){
+        User user = userService.getUserByUserName(username);
+        model.addAttribute("user",user);
         return "common/userPassword";
     }
 
     // 跳转到基本资料页面
-    @GetMapping("common/userSetting")
-    public String userSetting(){
+    @GetMapping("common/userSetting/{username}")
+    public String userSetting(@PathVariable  String username,Model model){
+        User user = userService.getUserByUserName(username);
+        model.addAttribute("user",user);
         return "common/userSetting";
     }
 
@@ -161,6 +165,8 @@ public class RouteController {
     @GetMapping("user/adminEditUser/{id}")
     public String getUserById(@PathVariable Integer id, Model model){
         User user = userService.getUserById(id);
+        // 将密码设置为null 防止传到前端去
+        user.setUserPassword(null);
         model.addAttribute("user",user);
         return "admin/userEdit";
     }

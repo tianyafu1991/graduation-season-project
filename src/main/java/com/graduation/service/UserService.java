@@ -1,6 +1,7 @@
 package com.graduation.service;
 
 import com.graduation.domain.User;
+import com.graduation.domain.param.PasswordParams;
 import com.graduation.domain.param.UserParams;
 
 import java.util.List;
@@ -53,4 +54,17 @@ public interface UserService {
      * @return
      */
     User getUserById(Integer id);
+
+    /**
+     * 根据用户名查询用户
+     * @param username
+     * @return
+     */
+    User getUserByUserName(String username);
+
+    /**
+     * 修改用户密码
+     * @param passwordParams
+     */
+    void updateUserPassword(PasswordParams passwordParams);
 }

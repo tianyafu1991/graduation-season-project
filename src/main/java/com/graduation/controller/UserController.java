@@ -1,9 +1,11 @@
 package com.graduation.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.graduation.common.CommonResponse;
 import com.graduation.domain.Book;
 import com.graduation.domain.User;
 import com.graduation.domain.param.BookParams;
+import com.graduation.domain.param.PasswordParams;
 import com.graduation.domain.param.UserParams;
 import com.graduation.service.UserService;
 import com.wf.captcha.utils.CaptchaUtil;
@@ -11,6 +13,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -96,5 +99,36 @@ public class UserController {
     public CommonResponse<User> updateUser(User user){
         userService.updateUser(user);
         return CommonResponse.successInstance("修改成功");
+    }
+
+
+    /**
+     * 修改用户密码
+     * @param passwordParams
+     * @return
+     */
+    @PutMapping("/updateUserPassword")
+    @ResponseBody
+    public CommonResponse<User> updateUserPassword(PasswordParams passwordParams){
+        if(StrUtil.isBlank(passwordParams.getOldPassword())|| StrUtil.isBlank(passwordParams.getNewPassword()) || StrUtil.isBlank(passwordParams.getAgainPassword())){
+            return CommonResponse.errorInstance("没有填写密码");
+        }else if (!passwordParams.getNewPassword().equals(passwordParams.getAgainPassword())){
+            return CommonResponse.errorInstance("2次新的密码不一致");
+        }else {
+            // 通过用户id获取表中的用户信息
+            User userById = userService.getUserById(passwordParams.getId());
+            // 判断表中的用户密码与前端传入的密码是否一致
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            // 第一个参数是前端页面传来的密码  第二个参数是数据库中的密码
+            if (!passwordEncoder.matches(passwordParams.getOldPassword(), userById.getUserPassword())) {
+                return CommonResponse.errorInstance("旧密码错误");
+            }
+            //一致就进行改密码操作
+            String newPasswordEncoded = passwordEncoder.encode(passwordParams.getNewPassword());
+            passwordParams.setNewPassword(newPasswordEncoded);
+            userService.updateUserPassword(passwordParams);
+            return CommonResponse.successInstance("修改成功");
+        }
+
     }
 }

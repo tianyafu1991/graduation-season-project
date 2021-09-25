@@ -51,3 +51,20 @@ insert into book(book_no,book_name,book_author,book_publish,book_category,book_p
 insert into book(book_no,book_name,book_author,book_publish,book_category,book_price,book_introduction) values('5555','巨人的陨落5','肯.福莱特','江苏凤凰文艺出版社',1,'129','一本文学巨作');
 insert into book(book_no,book_name,book_author,book_publish,book_category,book_price,book_introduction) values('6666','巨人的陨落6','肯.福莱特','江苏凤凰文艺出版社',1,'129','一本文学巨作');
 insert into book(book_no,book_name,book_author,book_publish,book_category,book_price,book_introduction) values('7777','巨人的陨落7','张三','江苏凤凰文艺出版社',1,'129','一本文学巨作');
+
+
+
+create table borrow_info(
+id int primary key auto_increment comment '自增主键id',
+user_id int comment '用户id',
+book_id int comment '书籍id',
+borrow_time datetime comment '借书时间 yyyy-MM-dd HH:mm:ss',
+return_time datetime comment '需要还书的时间 yyyy-MM-dd HH:mm:ss',
+real_return_time datetime comment '实际还书的时间 yyyy-MM-dd HH:mm:ss',
+create_time timestamp not null default current_timestamp comment '创建时间',
+update_time timestamp not null default current_timestamp on update current_timestamp comment '更新时间',
+KEY `user_id` (`user_id`) USING BTREE,
+KEY `book_id` (`book_id`) USING BTREE,
+CONSTRAINT `borrow_user_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+CONSTRAINT `borrow_book_ibfk_1` FOREIGN KEY (`book_id`) REFERENCES `book` (`id`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '借阅信息表';
