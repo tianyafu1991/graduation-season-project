@@ -67,4 +67,34 @@ public class UserController {
         return response;
     }
 
+    @PostMapping("/addUser")
+    @ResponseBody
+    public CommonResponse<User> addUser(User user){
+        User userInfo = userService.addUser(user);
+        return CommonResponse.successInstance(userInfo,null);
+    }
+
+    /**
+     * 根据传入的ids批量删除用户
+     * @param ids
+     * @return
+     */
+    @DeleteMapping("/deleteUsersByIds/{ids}")
+    @ResponseBody
+    public CommonResponse<User> deleteUsersByIds(@PathVariable String ids){
+        userService.deleteUsersByIds(ids);
+        return CommonResponse.successInstance("删除成功");
+    }
+
+    /**
+     * 编辑用户信息
+     * @param user
+     * @return
+     */
+    @PutMapping("/updateUser")
+    @ResponseBody
+    public CommonResponse<User> updateUser(User user){
+        userService.updateUser(user);
+        return CommonResponse.successInstance("修改成功");
+    }
 }

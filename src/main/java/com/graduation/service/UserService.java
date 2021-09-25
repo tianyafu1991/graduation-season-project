@@ -27,4 +27,30 @@ public interface UserService {
      * @return
      */
     Long getTotalCount(UserParams userParams);
+
+    /**
+     *  添加用户
+     * @param user
+     * @return
+     */
+    User addUser(User user);
+
+    /**
+     * 根据传入的ids批量删除用户
+     * @param ids
+     */
+    void deleteUsersByIds(String ids);
+
+    /**
+     * 编辑用户信息
+     * @param user
+     */
+    void updateUser(User user);
+
+    /**
+     * 根据用户id查询用户信息
+     * @param id
+     * @return
+     */
+    User getUserById(Integer id);
 }

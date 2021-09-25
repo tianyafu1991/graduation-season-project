@@ -33,7 +33,8 @@
                             <label class="layui-form-label">管理员</label>
                             <div class="layui-input-inline">
                                 <select name="adminFlg" lay-filter="adminFlag">
-                                    <option value="0" checked="">否</option>
+                                    <option value="">请选择是否为管理员</option>
+                                    <option value="0">否</option>
                                     <option value="1">是</option>
                                 </select>
                             </div>
@@ -65,7 +66,7 @@
             </div>
         </script>
 
-        <script type="text/html" id="col-book-toolbar">
+        <script type="text/html" id="col-user-toolbar">
             <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
             <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 
@@ -107,7 +108,7 @@
                 , {field: 'adminFlg', title: '是否管理员', width: 120, sort: true, align: 'center'}
                 , {field: 'createTime', title: '创建时间', width: 200, sort: true, align: 'center'}
                 , {field: 'updateTime', title: '更新时间', width: 200, sort: true, align: 'center'}
-                , {title: '操作', width: 120, toolbar: '#col-book-toolbar'}
+                , {title: '操作', width: 120, toolbar: '#col-user-toolbar'}
             ]]
             , parseData: function (res) { //res 即为原始返回的数据
                 return {
@@ -127,11 +128,9 @@
 
             table.reload('table-user', {
                 where: { //设定异步数据接口的额外参数，任意设
-                    bookNo: data.field.bookNo
-                    , bookName: data.field.bookName
-                    , bookAuthor: data.field.bookAuthor
-                    , bookPublish: data.field.bookPublish
-                    , bookCategory: data.field.bookCategory
+                    username: data.field.username
+                    , userPhone: data.field.userPhone
+                    , adminFlg: data.field.adminFlg
                 }
                 , page: {
                     curr: 1 //重新从第 1 页开始
@@ -148,13 +147,13 @@
                 case 'add':
                     //拿到的index是一个重要的凭据，它是诸如layer.close(index)等方法的必传参数。
                     var index = layer.open({
-                        title: '新增书籍',
+                        title: '新增用户',
                         type: 2,
                         shade: 0.2,
                         maxmin: true,
                         shadeClose: false,
                         area: ['100%', '100%'],
-                        content: ctxPath + 'book/adminAddBook',
+                        content: ctxPath + 'user/adminAddUser',
                     });
                     $(window).on("resize", function () {
                         layer.full(index);
@@ -173,9 +172,9 @@
                     var idsStr = ids.join(",") // 将id拼接成逗号分隔的字符串
                     console.log('选中的ids为:' + idsStr) //获取选中行的id
 
-                    layer.confirm('您确认删除选中的书籍?', {icon: 3, title: '删除确认'}, function (index) {
+                    layer.confirm('您确认删除选中的用户?', {icon: 3, title: '删除确认'}, function (index) {
                         //do something
-                        var url = ctxPath + 'book/deleteBooksByIds/' + idsStr;
+                        var url = ctxPath + 'user/deleteUsersByIds/' + idsStr;
                         var params = {
                             _method: "DELETE"
                         }
@@ -202,9 +201,9 @@
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             if (layEvent == 'del') {
-                layer.confirm('您确认删除该书籍:' + data.bookName + '?', {icon: 3, title: '删除确认'}, function (index) {
+                layer.confirm('您确认删除该用户:' + data.username + '?', {icon: 3, title: '删除确认'}, function (index) {
                     //do something
-                    var url = ctxPath + 'book/deleteBooksByIds/' + data.id;
+                    var url = ctxPath + 'user/deleteUsersByIds/' + data.id;
                     var params = {
                         _method: "DELETE"
                     }
@@ -230,7 +229,7 @@
                     maxmin: true,
                     shadeClose: false,
                     area: ['100%', '100%'],
-                    content: ctxPath + 'book/adminEditBook/' + data.id,
+                    content: ctxPath + 'user/adminEditUser/' + data.id,
                 });
                 $(window).on("resize", function () {
                     layer.full(index);

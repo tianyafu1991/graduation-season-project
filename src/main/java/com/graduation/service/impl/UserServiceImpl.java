@@ -20,6 +20,53 @@ public class UserServiceImpl implements UserService {
 
 
     /**
+     * 根据用户id查询用户信息
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public User getUserById(Integer id) {
+        return userMapper.getUserById( id);
+    }
+
+    /**
+     * 根据传入的ids批量删除用户
+     *
+     * @param ids
+     */
+    @Override
+    public void deleteUsersByIds(String ids) {
+        userMapper.deleteUsersByIds(ids);
+    }
+
+    /**
+     * 编辑用户信息
+     *
+     * @param user
+     */
+    @Override
+    public void updateUser(User user) {
+        userMapper.updateUser(user);
+    }
+
+    /**
+     * 添加用户
+     *
+     * @param user
+     * @return
+     */
+    @Override
+    public User addUser(User user) {
+        // 初始密码不是由页面配置的 而是代码中写死的123456
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String userPassword = passwordEncoder.encode("123456");
+        user.setUserPassword(userPassword);
+        userMapper.addUser(user);
+        return user;
+    }
+
+    /**
      * 按照查询条件分页查询用户
      *
      * @param userParams

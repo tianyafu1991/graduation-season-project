@@ -3,7 +3,9 @@ package com.graduation.controller;
 import com.graduation.common.CommonResponse;
 import com.graduation.domain.Book;
 import com.graduation.domain.BookCategory;
+import com.graduation.domain.User;
 import com.graduation.service.BookService;
+import com.graduation.service.UserService;
 import com.wf.captcha.utils.CaptchaUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,11 +27,34 @@ public class RouteController {
     @Autowired
     private BookService bookService;
 
+    @Autowired
+    private UserService userService;
+
     // 首页跳转 跳转到登录页
     @GetMapping("/")
     public String login(){
         return "login";
     }
+
+    // 首页跳转 跳转到登录页
+    @GetMapping("logout")
+    public String logout(HttpServletRequest request){
+        request.getSession().invalidate();
+        return "login";
+    }
+
+    // 跳转到修改密码页面
+    @GetMapping("common/userPassword")
+    public String userPassword(){
+        return "common/userPassword";
+    }
+
+    // 跳转到基本资料页面
+    @GetMapping("common/userSetting")
+    public String userSetting(){
+        return "common/userSetting";
+    }
+
     // 登录页中的验证码获取
     @RequestMapping("/captcha")
     public void captcha(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -94,7 +119,7 @@ public class RouteController {
 
 
     /**
-     * admin用户的 添加书籍 页面跳转
+     * admin用户的 添加书籍分类 页面跳转
      * @param model
      * @return
      */
@@ -120,6 +145,24 @@ public class RouteController {
     @GetMapping("adminUserList")
     public String adminUserList(){
         return "admin/userList";
+    }
+
+    /**
+     * admin用户的 添加书籍分类 页面跳转
+     * @param model
+     * @return
+     */
+    @GetMapping("user/adminAddUser")
+    public String adminAddUser(Model model){
+        return "admin/userAdd";
+    }
+
+
+    @GetMapping("user/adminEditUser/{id}")
+    public String getUserById(@PathVariable Integer id, Model model){
+        User user = userService.getUserById(id);
+        model.addAttribute("user",user);
+        return "admin/userEdit";
     }
 
 }

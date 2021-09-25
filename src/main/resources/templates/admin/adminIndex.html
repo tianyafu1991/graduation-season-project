@@ -45,10 +45,10 @@
                     <a href="javascript:;"><span th:text="${session.user.username}"></span>></a>
                     <dl class="layui-nav-child">
                         <dd>
-                            <a href="javascript:;" layuimini-content-href="page/user-setting.html" data-title="基本资料" data-icon="fa fa-gears">基本资料<span class="layui-badge-dot"></span></a>
+                            <a href="javascript:;" th:layuimini-content-href="@{/common/userSetting}" data-title="基本资料" data-icon="fa fa-gears">基本资料<span class="layui-badge-dot"></span></a>
                         </dd>
                         <dd>
-                            <a href="javascript:;" layuimini-content-href="page/user-password.html" data-title="修改密码" data-icon="fa fa-gears">修改密码</a>
+                            <a href="javascript:;" th:layuimini-content-href="@{/common/userPassword}" data-title="修改密码" data-icon="fa fa-gears">修改密码</a>
                         </dd>
                         <dd>
                             <hr>
@@ -142,10 +142,16 @@
             ],
         });
 
+        // 推出登录监听
         $('.login-out').on("click", function () {
-            layer.msg('退出登录成功', function () {
-                window.location = '../../static/layuimini/pages/login-3.html';
-            });
+            var log_out_url = ctxPath + "logout"
+            $.get(log_out_url,function (response) {
+                layer.msg('退出登录成功', function () {
+                    window.location = '/';
+                });
+            })
+
+
         });
     });
 </script>

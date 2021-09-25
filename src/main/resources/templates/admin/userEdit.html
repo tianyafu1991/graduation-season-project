@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/layuimini/lib/layui-v2.6.3/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/layuimini/css/layuimini.css?v=2.0.4.2}" media="all">
+    <link rel="stylesheet" th:href="@{/layuimini/css/themes/default.css}" media="all">
+    <link rel="stylesheet" th:href="@{/layuimini/lib/font-awesome-4.7.0/css/font-awesome.min.css}" media="all">
+</head>
+<body>
+<div class="layui-form layuimini-form" th:object="${user}">
+
+    <div class="layui-form-item" id="form-display-none-id">
+        <label class="layui-form-label required">id</label>
+        <div class="layui-input-block">
+            <input type="text" th:field="*{id}" lay-verify="required" lay-reqtext="书的编号不能为空" placeholder="请输入书的编号" value="" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">用户名</label>
+        <div class="layui-input-block">
+            <input type="text" th:field="*{username}" lay-verify="required" lay-reqtext="用户名不能为空" placeholder="请输入用户名" value="" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">密码</label>
+        <div class="layui-input-block">
+            <input type="password" th:field="*{userPassword}" lay-verify="required" lay-reqtext="密码不能为空" placeholder="请输入密码" value="" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">手机号</label>
+        <div class="layui-input-block">
+            <input type="text" th:field="*{userPhone}" lay-verify="required" lay-reqtext="手机号不能为空" placeholder="请输入手机号" value="" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button id="btn-submit" class="layui-btn" lay-submit lay-filter="submit-btn-filter">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+
+    <!--<div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
+        </div>
+    </div>-->
+</div>
+
+<script th:src="@{/layuimini/lib/layui-v2.6.3/layui.js}" charset="utf-8"></script>
+<script th:src="@{/layuimini/js/lay-config.js?v=2.0.0}" charset="utf-8"></script>
+<script th:inline="javascript">
+    var ctxPath=[[@{/}]];
+
+    var $ = layui.$;
+
+    // 因为 这是编辑表单 book的id并没有显示在编辑页面上 所以这里的data并没有带上id  所以要另外绑定
+    // form中visibility=hidden的和display=none的表单元素都会随表单提交, 只有disabled=true的元素不随表单提交。
+    // 所以这里用一个display 为 none的div来放id
+    $(document).ready(function (){
+        $('#form-display-none-id').css('display','none');
+    });
+
+    layui.use(['table','form'], function(){
+        var table = layui.table;
+        var form = layui.form;
+
+
+
+        form.on('submit(submit-btn-filter)', function(data){
+            // 当用户点击提交后  将按钮置为灰色不可点击  防止短时间内多次点击
+            $("#btn-submit").attr("disabled","disabled").addClass("layui-btn-disabled");
+
+            console.log('提交表单'+data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+            console.log('提交表单Id'+data.field.id) //当前容器的全部表单字段，名值对形式：{name: value}
+            // 异步提交请求
+            var url = ctxPath + "user/updateUser";
+
+            // 将请求类型改为PUT提交
+            data.field._method="PUT";
+            $.post(url,data.field,function(response){
+                console.log(response)
+                if (0 == response.code) {
+                    // 提交成功后 提示成功  并需要关闭窗口 并且刷新表单数据
+                    layer.msg(response.msg, {icon: 6, time: 1000}, function () {
+                        // 刷新表格
+                        parent.refreshTable()
+                        // 关闭窗口
+                        //当你在iframe页面关闭自身时
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
+
+                    });
+                } else {
+                    $("#btn-submit").removeAttr("disabled","disabled").removeClass("layui-btn-disabled");
+                    layer.alert(response.msg, {icon: 5, anim: 6,title:"更新失败"});
+                }
+            });
+
+
+            // 失败则提示错误信息 窗口不关闭
+
+
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+    });
+</script>
+
+</body>
+</html>

@@ -13,4 +13,12 @@ public interface UserMapper {
     List<User> getUserLists(UserParams userParams);
     // 按照查询条件 获取符合条件的所有数据的总数
     Long getTotalCount(UserParams userParams);
+    // 添加用户
+    void addUser(User user);
+    // 根据传入的ids批量删除用户
+    void deleteUsersByIds(String ids);
+    // 编辑用户信息
+    void updateUser(User user);
+    // 根据用户id查询用户信息
+    User getUserById(Integer id);
 }

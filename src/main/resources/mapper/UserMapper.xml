@@ -27,6 +27,22 @@
             </if>
         </where>
     </sql>
+    <insert id="addUser">
+        insert into user(username,user_password,user_phone,admin_flg) values(#{username},#{userPassword},#{userPhone},#{adminFlg})
+    </insert>
+    <update id="updateUser">
+        UPDATE user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="username!=null">username=#{username},</if>
+            <if test="userPassword!=null">user_password=#{userPassword},</if>
+            <if test="userPhone!=null">user_phone=#{userPhone},</if>
+            <if test="adminFlg!=null">admin_flg=#{adminFlg},</if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+    <delete id="deleteUsersByIds">
+        delete from user where id in (${ids})
+    </delete>
 
 
     <select id="getUser" resultMap="userMap">
@@ -53,5 +69,13 @@ count(1) cnt
 from
 user a
 <include refid="getUsersWhere"></include>
+</select>
+<select id="getUserById" resultMap="userMap">
+select
+a.id,a.username,a.user_phone
+from
+user a
+where 1=1
+and a.id = #{id}
 </select>
 </mapper>
