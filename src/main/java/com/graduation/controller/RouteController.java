@@ -56,25 +56,25 @@ public class RouteController {
 
 
     // admin用户的 借阅信息 页面跳转
-    @GetMapping("/adminBorrowList")
+    @GetMapping("adminBorrowList")
     public String adminBorrowList(){
         return "admin/borrowList";
     }
 
     // admin用户的 书籍管理 页面跳转
-    @GetMapping("/adminBookList")
+    @GetMapping("adminBookList")
     public String adminBookList(){
         return "admin/bookList";
     }
 
     // admin用户的 书籍类别管理 页面跳转
-    @GetMapping("/adminCategoryList")
+    @GetMapping("adminCategoryList")
     public String adminCategoryList(){
         return "admin/categoryList";
     }
 
     // admin用户的 用户管理 页面跳转
-    @GetMapping("/adminUserList")
+    @GetMapping("adminUserList")
     public String adminUserList(){
         return "admin/userList";
     }
@@ -90,12 +90,36 @@ public class RouteController {
     }
 
     @GetMapping("book/adminEditBook/{id}")
-    public String getBooksById(@PathVariable Integer id, Model model){
+    public String getBookById(@PathVariable Integer id, Model model){
         Book book = bookService.getBooksById(id);
         List<BookCategory> categoryList = bookService.getAllBookCategories();
         model.addAttribute("book",book);
         model.addAttribute("categoryList",categoryList);
         return "admin/bookEdit";
+    }
+
+
+    /**
+     * admin用户的 添加书籍 页面跳转
+     * @param model
+     * @return
+     */
+    @GetMapping("book/adminAddBookCategory")
+    public String adminAddBookCategory(Model model){
+        return "admin/bookCategoryAdd";
+    }
+
+    /**
+     * 编辑书籍类别的路由
+     * @param categoryId
+     * @param model
+     * @return
+     */
+    @GetMapping("book/adminEditBookCategory/{categoryId}")
+    public String getBookCategoryById(@PathVariable Integer categoryId, Model model){
+        BookCategory bookCategory = bookService.getBookCategoryById(categoryId);
+        model.addAttribute("bookCategory",bookCategory);
+        return "admin/bookCategoryEdit";
     }
 
 }

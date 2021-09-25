@@ -3,6 +3,7 @@ package com.graduation.service.impl;
 
 import com.graduation.domain.Book;
 import com.graduation.domain.BookCategory;
+import com.graduation.domain.param.BookCategoryParams;
 import com.graduation.domain.param.BookParams;
 import com.graduation.mapper.BookCategoryMapper;
 import com.graduation.mapper.BookMapper;
@@ -20,6 +21,72 @@ public class BookServiceImpl implements BookService {
 
     @Resource
     private BookCategoryMapper bookCategoryMapper;
+
+
+    /**
+     * 批量删除书籍类别
+     *
+     * @param categoryIds
+     */
+    @Override
+    public void deleteBookCategoriesByIds(String categoryIds) {
+        bookCategoryMapper.deleteBookCategoriesByIds(categoryIds);
+    }
+
+    /**
+     * 更新书籍类别信息
+     *
+     * @param bookCategory
+     */
+    @Override
+    public void updateBookCategory(BookCategory bookCategory) {
+        bookCategoryMapper.updateBookCategory(bookCategory);
+    }
+
+    /**
+     * 编辑书籍类别时 需要先获取到该类别的信息
+     *
+     * @param categoryId
+     * @return
+     */
+    @Override
+    public BookCategory getBookCategoryById(Integer categoryId) {
+        return bookCategoryMapper.getBookCategoryById( categoryId);
+    }
+
+    /**
+     * 新增书籍类别
+     *
+     * @param bookCategory
+     * @return
+     */
+    @Override
+    public BookCategory addBookCategory(BookCategory bookCategory) {
+        bookCategoryMapper.addBookCategory(bookCategory);
+        return bookCategory;
+    }
+
+    /**
+     * 按照查询条件分页查询书籍类别
+     *
+     * @param bookCategoryParams
+     * @return
+     */
+    @Override
+    public List<BookCategory> getBookCategoryLists(BookCategoryParams bookCategoryParams) {
+        return bookCategoryMapper.getBookCategoryLists(bookCategoryParams);
+    }
+
+    /**
+     * 按照查询条件 获取符合条件的所有书籍类别的总数
+     *
+     * @param bookCategoryParams
+     * @return
+     */
+    @Override
+    public Long getCategoryTotalCount(BookCategoryParams bookCategoryParams) {
+        return bookCategoryMapper.getCategoryTotalCount(bookCategoryParams);
+    }
 
     /**
      * 编辑书籍

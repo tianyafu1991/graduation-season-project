@@ -2,6 +2,7 @@ package com.graduation.service;
 
 import com.graduation.domain.Book;
 import com.graduation.domain.BookCategory;
+import com.graduation.domain.param.BookCategoryParams;
 import com.graduation.domain.param.BookParams;
 
 import java.util.List;
@@ -53,4 +54,46 @@ public interface BookService {
      * @param book
      */
     void updateBook(Book book);
+
+    /**
+     * 按照查询条件分页查询书籍类别
+     * @param bookCategoryParams
+     * @return
+     */
+    List<BookCategory> getBookCategoryLists(BookCategoryParams bookCategoryParams);
+
+    /**
+     * 按照查询条件 获取符合条件的所有书籍类别的总数
+     * @param bookCategoryParams
+     * @return
+     */
+    Long getCategoryTotalCount(BookCategoryParams bookCategoryParams);
+
+    /**
+     * 新增书籍类别
+     * @param bookCategory
+     * @return
+     */
+    BookCategory addBookCategory(BookCategory bookCategory);
+
+    /**
+     * 编辑书籍类别时 需要先获取到该类别的信息
+     * @param id
+     * @return
+     */
+    BookCategory getBookCategoryById(Integer categoryId);
+
+    /**
+     * 更新书籍类别信息
+     * @param bookCategory
+     */
+    void updateBookCategory(BookCategory bookCategory);
+
+    /**
+     * 批量删除书籍类别
+     * @param categoryIds
+     */
+    void deleteBookCategoriesByIds(String categoryIds);
+
+
 }

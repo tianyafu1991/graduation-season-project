@@ -11,7 +11,7 @@ spring:
       mysql:
         type: com.alibaba.druid.pool.DruidDataSource
         driver-class-name: com.mysql.jdbc.Driver
-        url: jdbc:mysql://${MYSQL_HOST:tianyafu}:${MYSQL_PORT:3306}/${MYSQL_DATABASE_NAME:graduation_project}?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8
+        url: jdbc:mysql://${MYSQL_HOST:tianyafu}:${MYSQL_PORT:3306}/${MYSQL_DATABASE_NAME:graduation_project}?autoReconnect=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8
         username: ${MYSQL_USERNAME:root}
         password: ${MYSQL_PASSWORD:root}
       initial-size: 5
@@ -55,7 +55,11 @@ mybatis:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
-
+# 日志配置
+logging:
+  config: classpath:log4j2.yml
+  level:
+    com.graduation.mapper: debug
 
 swagger:
   show: true
