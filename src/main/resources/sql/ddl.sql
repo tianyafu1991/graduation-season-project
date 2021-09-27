@@ -53,7 +53,7 @@ insert into book(book_no,book_name,book_author,book_publish,book_category,book_p
 insert into book(book_no,book_name,book_author,book_publish,book_category,book_price,book_introduction) values('7777','巨人的陨落7','张三','江苏凤凰文艺出版社',1,'129','一本文学巨作');
 
 
-
+drop table if exists borrow_info;
 create table borrow_info(
 id int primary key auto_increment comment '自增主键id',
 user_id int comment '用户id',
@@ -61,6 +61,7 @@ book_id int comment '书籍id',
 borrow_time datetime comment '借书时间 yyyy-MM-dd HH:mm:ss',
 return_time datetime comment '需要还书的时间 yyyy-MM-dd HH:mm:ss',
 real_return_time datetime comment '实际还书的时间 yyyy-MM-dd HH:mm:ss',
+return_flg char(1) default 0 comment '归还标记 0未归还  1已归还',
 create_time timestamp not null default current_timestamp comment '创建时间',
 update_time timestamp not null default current_timestamp on update current_timestamp comment '更新时间',
 KEY `user_id` (`user_id`) USING BTREE,
@@ -68,3 +69,7 @@ KEY `book_id` (`book_id`) USING BTREE,
 CONSTRAINT `borrow_user_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
 CONSTRAINT `borrow_book_ibfk_1` FOREIGN KEY (`book_id`) REFERENCES `book` (`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '借阅信息表';
+
+
+insert into borrow_info(user_id,book_id,borrow_time,return_time,real_return_time,return_flg) values (2,8,'2021-08-26 15:22:37','2021-10-26 23:59:59',null,0);
+

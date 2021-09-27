@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.graduation.mapper.BorrowMapper">
+
+    <insert id="borrowBookByBorrowInfo">
+        insert into borrow_info(user_id,book_id,borrow_time,return_time,real_return_time,return_flg)
+        values (#{userId},#{bookId},#{borrowTime},#{returnTime},#{realReturnTime},#{returnFlg});
+    </insert>
+</mapper>

@@ -2,6 +2,7 @@ package com.graduation.service;
 
 import com.graduation.domain.Book;
 import com.graduation.domain.BookCategory;
+import com.graduation.domain.BookWithBorrowFlg;
 import com.graduation.domain.param.BookCategoryParams;
 import com.graduation.domain.param.BookParams;
 
@@ -95,5 +96,11 @@ public interface BookService {
      */
     void deleteBookCategoriesByIds(String categoryIds);
 
-
+    /**
+     * 查询书籍列表 以及标记该本书用户当前是否已经借了且尚未归还
+     * @param bookParams
+     * @param username
+     * @return
+     */
+    List<BookWithBorrowFlg> getBookListsWithUser(BookParams bookParams,String username);
 }

@@ -44,7 +44,11 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">分类</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="bookCategory" autocomplete="off" class="layui-input">
+                                <select name="bookCategory">
+                                    <option value="">请选择一个分类</option>
+                                    <option th:each="category:${categoryList}" th:value="${category.getCategoryId()}"><span th:text="${category.getCategoryName()}"></span></option>
+                                </select>
+<!--                                <input type="text" name="bookCategory" autocomplete="off" class="layui-input">-->
                             </div>
                         </div>
                         <div class="layui-inline">
@@ -140,7 +144,7 @@
                     ,bookName: data.field.bookName
                     ,bookAuthor: data.field.bookAuthor
                     ,bookPublish: data.field.bookPublish
-                    ,bookCategory: data.field.bookCategory
+                    ,categoryName: data.field.categoryName
                 }
                 ,page: {
                     curr: 1 //重新从第 1 页开始

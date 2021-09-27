@@ -3,6 +3,7 @@ package com.graduation.controller;
 import com.graduation.common.CommonResponse;
 import com.graduation.domain.Book;
 import com.graduation.domain.BookCategory;
+import com.graduation.domain.BookWithBorrowFlg;
 import com.graduation.domain.param.BookCategoryParams;
 import com.graduation.domain.param.BookParams;
 import com.graduation.service.BookService;
@@ -109,6 +110,23 @@ public class BookController {
     public CommonResponse<Book> deleteBookCategoriesByIds(@PathVariable String categoryIds){
         bookService.deleteBookCategoriesByIds(categoryIds);
         return CommonResponse.successInstance("删除成功");
+    }
+
+
+    /**
+     * 按照条件获取书籍信息
+     * @param bookParams
+     * @return
+     */
+    @GetMapping("/getBookListsWithUser/{username}")
+    @ResponseBody
+    public CommonResponse<List<BookWithBorrowFlg>> getBookListsWithUser(@PathVariable String username,BookParams bookParams){
+        // 按照查询条件分页查询书籍
+        List<BookWithBorrowFlg> books = bookService.getBookListsWithUser(bookParams,username);
+        // 按照查询条件 获取符合条件的所有数据的总数
+        Long totalCount = bookService.getTotalCount(bookParams);
+        CommonResponse response = CommonResponse.successInstance(books, totalCount);
+        return response;
     }
 
 }

@@ -1,7 +1,9 @@
 package com.graduation.mapper;
 
 import com.graduation.domain.Book;
+import com.graduation.domain.BookWithBorrowFlg;
 import com.graduation.domain.param.BookParams;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -21,4 +23,6 @@ public interface BookMapper {
     Book getBooksById(Integer id);
     // 根据传入的书籍信息 修改表中的信息
     void updateBook(Book book);
+    // 查询书籍列表 以及标记该本书用户当前是否已经借了且尚未归还
+    List<BookWithBorrowFlg> getBookListsWithUser(@Param("bookParams") BookParams bookParams, @Param("username") String username);
 }

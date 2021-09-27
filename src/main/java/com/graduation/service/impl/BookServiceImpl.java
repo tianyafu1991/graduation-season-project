@@ -3,6 +3,7 @@ package com.graduation.service.impl;
 
 import com.graduation.domain.Book;
 import com.graduation.domain.BookCategory;
+import com.graduation.domain.BookWithBorrowFlg;
 import com.graduation.domain.param.BookCategoryParams;
 import com.graduation.domain.param.BookParams;
 import com.graduation.mapper.BookCategoryMapper;
@@ -22,6 +23,23 @@ public class BookServiceImpl implements BookService {
     @Resource
     private BookCategoryMapper bookCategoryMapper;
 
+
+    /**
+     * 查询书籍列表 以及标记该本书用户当前是否已经借了且尚未归还
+     *
+     * @param bookParams
+     * @param username
+     * @return
+     */
+    @Override
+    public List<BookWithBorrowFlg> getBookListsWithUser(BookParams bookParams,String username) {
+        List<BookWithBorrowFlg> bookListsWithUser = bookMapper.getBookListsWithUser(bookParams, username);
+        // 其实这里的用户名在前端暂时没用到 这里先放到对象中 防止后续要用
+        for (BookWithBorrowFlg bookWithBorrowFlg : bookListsWithUser) {
+            bookWithBorrowFlg.setUsername(username);
+        }
+        return bookListsWithUser;
+    }
 
     /**
      * 批量删除书籍类别

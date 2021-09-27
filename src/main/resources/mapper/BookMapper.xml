@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.graduation.mapper.BookMapper">
 
-    <!-- 用户对象映射 -->
+    <!-- 书籍对象映射 -->
     <resultMap type="com.graduation.domain.Book" id="bookMap">
         <id column="id" property="id"/>
         <id column="book_no" property="bookNo"/>
@@ -15,6 +15,23 @@
         <id column="category_name" property="categoryName"/>
         <id column="create_time" property="createTime"/>
         <id column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!-- 书籍对象映射 -->
+    <resultMap type="com.graduation.domain.BookWithBorrowFlg" id="bookWithBorrowFlgMap">
+        <id column="id" property="id"/>
+        <id column="book_no" property="bookNo"/>
+        <id column="book_name" property="bookName"/>
+        <id column="book_author" property="bookAuthor"/>
+        <id column="book_publish" property="bookPublish"/>
+        <id column="book_category" property="bookCategory"/>
+        <id column="book_price" property="bookPrice"/>
+        <id column="book_introduction" property="bookIntroduction"/>
+        <id column="category_name" property="categoryName"/>
+        <id column="create_time" property="createTime"/>
+        <id column="update_time" property="updateTime"/>
+        <id column="username" property="username"/>
+        <id column="borrow_flg" property="borrowFlg"/>
     </resultMap>
 
 <sql id = "getBooksWhere">
@@ -33,7 +50,28 @@ and a.book_author like '%' #{bookAuthor} '%'
 and a.book_publish like '%' #{bookPublish} '%'
 </if>
 <if test="bookCategory != null and bookCategory != ''">
-and b.category_name like '%' #{bookCategory} '%'
+and a.book_category = #{bookCategory}
+</if>
+</where>
+</sql>
+
+<sql id = "getBooksWithUsernameWhere">
+<where>
+1=1
+<if test="bookParams.bookNo != null and bookParams.bookNo != ''">
+and a.book_no like '%' #{bookParams.bookNo} '%'
+</if>
+<if test="bookParams.bookName != null and bookParams.bookName != ''">
+and a.book_name like '%' #{bookParams.bookName} '%'
+</if>
+<if test="bookParams.bookAuthor != null and bookParams.bookAuthor != ''">
+and a.book_author like '%' #{bookParams.bookAuthor} '%'
+</if>
+<if test="bookParams.bookPublish != null and bookParams.bookPublish != ''">
+and a.book_publish like '%' #{bookParams.bookPublish} '%'
+</if>
+<if test="bookParams.bookCategory != null and bookParams.bookCategory != ''">
+and a.book_category = #{bookParams.bookCategory}
 </if>
 </where>
 </sql>
@@ -92,5 +130,31 @@ inner join
 book_category b
 on a.book_category = b.category_id
 where a.id = #{id}
+</select>
+
+
+
+<select id="getBookListsWithUser" resultMap="bookWithBorrowFlgMap">
+select
+t.id,t.book_no,t.book_name,t.book_author,t.book_publish,t.book_price,t.book_category,t.book_introduction,t.category_name
+,t.create_time,t.update_time,t.username,(case when t.username=#{username} and t.return_flg = 0 then 1 else 0 end ) borrow_flg
+from
+(
+select
+a.id,a.book_no,a.book_name,a.book_author,a.book_publish,a.book_price,a.book_category,a.book_introduction,b.category_name
+,a.create_time,a.update_time,d.username,c.return_flg
+from
+book a
+inner join
+book_category b
+on a.book_category = b.category_id
+left join borrow_info c
+on a.id = c.book_id
+left join user d
+on c.user_id = d.id
+<include refid="getBooksWithUsernameWhere"></include>
+order by a.update_time desc
+limit #{bookParams.start},#{bookParams.limit}
+) t
 </select>
 </mapper>

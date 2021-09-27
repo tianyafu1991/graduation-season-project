@@ -23,7 +23,7 @@
           "child": [
             {
               "title": "图书借阅",
-              "href": "/layuimini/page/user/book/borrow-list.html",
+              "href": "userBorrowInfoList",
               "icon": "fa fa-book",
               "target": "_self"
             }
