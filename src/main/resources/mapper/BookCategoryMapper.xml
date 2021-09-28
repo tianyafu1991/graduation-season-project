@@ -55,5 +55,12 @@ where
 1=1
 and category_id = #{categoryId}
 </select>
+<select id="getBookCategoryByCategoryName" resultMap="bookCategoryMap">
+select category_id , category_name , create_time , update_time
+from book_category
+where
+1=1
+and category_name = #{categoryName}
+</select>
 
 </mapper>

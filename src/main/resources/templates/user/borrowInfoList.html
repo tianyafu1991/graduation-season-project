@@ -59,6 +59,24 @@
 <!--                                <input type="text" name="bookCategory" autocomplete="off" class="layui-input">-->
                             </div>
                         </div>
+
+                        <div class="layui-inline">
+                            <label class="layui-form-label">借书时间</label>
+                            <div class="layui-input-inline" style="width: 100px;">
+                                <input type="text" name="startDate" placeholder="借书时间" autocomplete="off" class="layui-input date">
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <label class="layui-form-label">是否逾期</label>
+                            <div class="layui-input-inline">
+                                <select name="overDueFlg" lay-filter="overDueFlg">
+                                    <option value="">请选择是否逾期</option>
+                                    <option value="0">否</option>
+                                    <option value="1">是</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="layui-inline">
                             <button type="submit" id="data-search" class="layui-btn layui-btn-normal"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
                             <button type="reset" id="data-reset" class="layui-btn layui-btn-primary" ><i class="layui-icon"></i> 重 置</button>
@@ -87,11 +105,11 @@
 <!--            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>-->
 
             <!-- 这里同样支持 laytpl 语法，如： -->
-            <!-- 0 表示该用户当前没有借 1表示该用户已经借了这本书 且还是未归还的 -->
-            {{#  if(d.borrowFlg == 1){ }}
-            <a class="layui-btn layui-btn-xs  layui-btn-disabled" lay-event="">借书</a>
+            <!-- 归还标记 0未归还  1已归还 -->
+            {{#  if(d.returnFlg == 1){ }}
+            <a class="layui-btn layui-btn-xs  layui-btn-disabled" lay-event="">还书</a>
             {{#  } else { }}
-            <a class="layui-btn layui-btn-xs" lay-event="borrow">借书</a>
+            <a class="layui-btn layui-btn-xs" lay-event="return_book">还书</a>
             {{#  } }}
 
         </script>
@@ -116,28 +134,42 @@
     var username=$('#username-span').text()
     console.log('获取绑定的用户名:'+ username)
 
-    layui.use(['table','form'], function(){
+    layui.use(['table','form','laydate'], function(){
         var table = layui.table;
         var form = layui.form;
+        var laydate = layui.laydate;
 
+        //执行一个laydate实例
+        laydate.render({
+            elem: '.date' //指定元素
+            ,range:true
+        });
 
-
-        //书籍表格渲染
+        //借阅表格渲染
         table.render({
             elem: '#table-book'
-            ,url: ctxPath + 'book/getBookListsWithUser/' +  username //数据接口
+            ,url: ctxPath + 'borrow/getBorrowLists/' +  username //数据接口
             ,page: true //开启分页
             ,limits: [5,10,20,30,50]
             ,cols: [[ //表头
                 {type: "checkbox",width: 60}
-                ,{field: 'id', title: 'id', width:60, sort: true ,align: 'center', hide: true}
-                ,{field: 'bookNo', title: '编号', width:80, sort: true ,align: 'center'}
-                ,{field: 'bookName', title: '书名', width:140,align: 'center'}
-                ,{field: 'bookAuthor', title: '作者', width:80, sort: true,align: 'center'}
+                ,{field: 'bookId', title: '书籍id', width:60, sort: true ,align: 'center', hide: true}
+                ,{field: 'userId', title: '用户id', width:60, sort: true ,align: 'center', hide: true}
+                ,{field: 'returnTime', title: '需要还书的时间', width:60, sort: true ,align: 'center', hide: true}
+                ,{field: 'returnFlg', title: '归还标记', width:60, sort: true ,align: 'center', hide: true}
+                ,{field: 'overDueFlg', title: '逾期标记', width:60, sort: true ,align: 'center', hide: true}
+                ,{field: 'username', title: '用户名', width:60, sort: true ,align: 'center', hide: true}
+
+                ,{field: 'bookNo', title: '编号', width:120, sort: true ,align: 'center'}
+                ,{field: 'bookName', title: '书名', width:300,align: 'center'}
+                ,{field: 'bookAuthor', title: '作者', width:200, sort: true,align: 'center'}
                 ,{field: 'bookPublish', title: '出版社', width:120 ,align: 'center'}
-                ,{field: 'categoryName', title: '分类', width: 80, sort: true,align: 'center'}
-                ,{field: 'bookPrice', title: '价格', width: 60,align: 'center'}
-                ,{field: 'bookIntroduction', title: '介绍'}
+                ,{field: 'categoryName', title: '分类', width: 100, sort: true,align: 'center'}
+                ,{field: 'bookPrice', title: '价格', width: 100,align: 'center'}
+                ,{field: 'borrowTime', title: '借书时间', width: 200,align: 'center'}
+                ,{field: 'realReturnTime', title: '还书时间', width: 200,align: 'center'}
+                ,{field: 'overDueCost', title: '逾期计费', width: 60,align: 'center'}
+                // ,{field: 'bookIntroduction', title: '介绍'}
                 ,{title: '操作', width: 120,toolbar: '#col-book-toolbar'}
             ]]
             ,parseData: function(res){ //res 即为原始返回的数据
@@ -174,6 +206,8 @@
                     ,bookAuthor: data.field.bookAuthor
                     ,bookPublish: data.field.bookPublish
                     ,bookCategory: data.field.bookCategory
+                    ,startDate: data.field.startDate
+                    ,overDueFlg: data.field.overDueFlg
                 }
                 ,page: {
                     curr: 1 //重新从第 1 页开始
@@ -245,10 +279,10 @@
         table.on('tool(table-book-filter)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
-            if(layEvent == 'borrow'){
-                layer.confirm('您即将借阅该书籍:' + data.bookName + '?', {icon: 3, title:'借阅确认'}, function(index){
+            if(layEvent == 'return_book'){
+                layer.confirm('您即将归还该书籍:' + data.bookName + '?', {icon: 3, title:'归还确认'}, function(index){
                     //do something
-                    var url = ctxPath + 'borrow/borrowBookById/' + data.id + '/' + username;
+                    var url = ctxPath + 'borrow/returnBookById/' + data.bookId + '/' + username;
                     var params = {
                         _method: "PUT"
                     }

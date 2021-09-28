@@ -20,4 +20,6 @@ public interface BookCategoryMapper {
     void updateBookCategory(BookCategory bookCategory);
     // 批量删除书籍类别
     void deleteBookCategoriesByIds(String categoryIds);
+    // 根据类别名称获取书籍类别
+    BookCategory getBookCategoryByCategoryName(String categoryName);
 }

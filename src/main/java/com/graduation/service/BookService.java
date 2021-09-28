@@ -103,4 +103,12 @@ public interface BookService {
      * @return
      */
     List<BookWithBorrowFlg> getBookListsWithUser(BookParams bookParams,String username);
+
+    /**
+     * 根据类别名称获取书籍类别
+     * 书籍类别重名校验
+     * @param categoryName
+     * @return
+     */
+    BookCategory getBookCategoryByCategoryName(String categoryName);
 }

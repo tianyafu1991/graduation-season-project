@@ -2,8 +2,117 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.graduation.mapper.BorrowMapper">
 
-    <insert id="borrowBookByBorrowInfo">
-        insert into borrow_info(user_id,book_id,borrow_time,return_time,real_return_time,return_flg)
-        values (#{userId},#{bookId},#{borrowTime},#{returnTime},#{realReturnTime},#{returnFlg});
-    </insert>
+    <!-- 书籍类别对象映射 -->
+    <resultMap type="com.graduation.domain.BorrowInfoVo" id="borrowInfoVoMap">
+        <id column="book_no" property="bookNo"/>
+        <id column="book_name" property="bookName"/>
+        <id column="book_author" property="bookAuthor"/>
+        <id column="book_publish" property="bookPublish"/>
+        <id column="book_price" property="bookPrice"/>
+        <id column="category_name" property="categoryName"/>
+        <id column="borrow_time" property="borrowTime"/>
+        <id column="real_return_time" property="realReturnTime"/>
+        <id column="over_due_cost" property="overDueCost"/>
+        <id column="book_introduction" property="bookIntroduction"/>
+        <id column="book_id" property="bookId"/>
+        <id column="user_id" property="userId"/>
+        <id column="return_time" property="returnTime"/>
+        <id column="return_flg" property="returnFlg"/>
+        <id column="over_due_flg" property="overDueFlg"/>
+        <id column="username" property="username"/>
+    </resultMap>
+
+
+<sql id = "getBorrowInfoVosWhere">
+<where>
+1=1
+<if test="user.adminFlg !=1">
+and b.username = #{user.username}
+</if>
+<if test="params.bookNo != null and params.bookNo != ''">
+and c.book_no like '%' #{params.bookNo} '%'
+</if>
+<if test="params.bookName != null and params.bookName != ''">
+and c.book_name like '%' #{params.bookName} '%'
+</if>
+<if test="params.bookAuthor != null and params.bookAuthor != ''">
+and c.book_author like '%' #{params.bookAuthor} '%'
+</if>
+<if test="params.bookPublish != null and params.bookPublish != ''">
+and c.book_publish like '%' #{params.bookPublish} '%'
+</if>
+<if test="params.bookCategory != null and params.bookCategory != ''">
+and d.category_id = #{params.bookCategory}
+</if>
+<if test="params.overDueFlg==1">
+and a.return_flg = 0 and NOW() > return_time
+</if>
+    <if test="params.overDueFlg==0">
+        and ((a.return_flg = 0 and NOW() <![CDATA[ <= ]]>  return_time) or a.return_flg = 1)
+    </if>
+</where>
+</sql>
+
+<!-- 借书 -->
+<insert id="borrowBookByBorrowInfo">
+insert into borrow_info(user_id,book_id,borrow_time,return_time,real_return_time,return_flg)
+values (#{userId},#{bookId},#{borrowTime},#{returnTime},#{realReturnTime},#{returnFlg});
+</insert>
+<!-- 还书 -->
+<update id="returnBookById">
+update borrow_info set real_return_time = date_format(now(),'%Y-%m-%d %H:%i:%s') , return_flg = 1
+where user_id=#{user.id} and book_id = #{bookId} and return_flg = 0
+</update>
+
+    <!-- 按照查询条件 获取符合条件的所有用户的数据的总数 -->
+<select id="getTotalCount" resultType="java.lang.Long">
+SELECT
+count(1) cnt
+FROM
+borrow_info a
+left join
+user b
+on a.user_id = b.id
+left join
+book c
+on a.book_id = c.id
+left join
+book_category d
+on c.book_category = d.category_id
+<include refid="getBorrowInfoVosWhere"></include>
+</select>
+<!-- 按照查询条件分页查询用户的借阅信息 -->
+<select id="getBorrowLists" resultMap="borrowInfoVoMap">
+SELECT
+c.book_no,
+c.book_name,
+c.book_author,
+c.book_publish,
+c.book_price,
+d.category_name,
+date_format(a.borrow_time,'%Y-%m-%d %H:%i:%s') borrow_time,
+date_format(a.real_return_time,'%Y-%m-%d %H:%i:%s') real_return_time,
+(case when a.return_flg = 0 and NOW() > return_time then DATEDIFF(now(),return_time) else null end ) over_due_cost,
+c.book_introduction,
+a.book_id,
+a.user_id,
+date_format(a.return_time,'%Y-%m-%d %H:%i:%s') return_time,
+a.return_flg,
+(case when a.return_flg = 0 and NOW() > return_time then 1 else 0 end ) over_due_flg,
+b.username
+FROM
+borrow_info a
+left join
+user b
+on a.user_id = b.id
+left join
+book c
+on a.book_id = c.id
+left join
+book_category d
+on c.book_category = d.category_id
+<include refid="getBorrowInfoVosWhere"></include>
+order by over_due_flg desc,borrow_time
+limit #{params.start},#{params.limit}
+</select>
 </mapper>

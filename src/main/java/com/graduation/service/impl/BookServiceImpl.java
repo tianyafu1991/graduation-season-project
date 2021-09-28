@@ -25,6 +25,18 @@ public class BookServiceImpl implements BookService {
 
 
     /**
+     * 根据类别名称获取书籍类别
+     * 书籍类别重名校验
+     *
+     * @param categoryName
+     * @return
+     */
+    @Override
+    public BookCategory getBookCategoryByCategoryName(String categoryName) {
+        return bookCategoryMapper.getBookCategoryByCategoryName(categoryName);
+    }
+
+    /**
      * 查询书籍列表 以及标记该本书用户当前是否已经借了且尚未归还
      *
      * @param bookParams
