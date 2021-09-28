@@ -6,7 +6,7 @@ package com.graduation.enums;
 public enum StatusCode {
 
     /**
-     * 操作成功
+     * 操作成功 layui中 返回0表示成功 返回其它code码都是失败
      */
     OPERATION_SUCCESS(0, "success"),
     /**

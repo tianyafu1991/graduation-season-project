@@ -19,6 +19,17 @@ public class UserServiceImpl implements UserService {
     @Resource
     private UserMapper userMapper;
 
+    /**
+     * 根据用户信息查询用户
+     * 主要用于编辑用户的校验 编辑用户时 如果传入的用户名不为空 则传入的username应该要和除带更新用户id的那条数据外的所有用户名都不重复
+     *
+     * @param user
+     * @return
+     */
+    @Override
+    public User getUserByUser(User user) {
+        return userMapper.getUserByUser(user);
+    }
 
     /**
      * 修改用户密码

@@ -126,7 +126,7 @@
                 <div class="layui-form-item">
                     <label class="layui-icon layui-icon-username" for="username"></label>
                     <input type="text" id="username" name="username" lay-verify="required|account" placeholder="用户名或者邮箱"
-                           autocomplete="off" class="layui-input" value="zhangsan">
+                           autocomplete="off" class="layui-input" value="admin">
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-icon layui-icon-password" for="password"></label>
@@ -145,8 +145,8 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label required" for="adminFlg">身份</label>
                     <div class="layui-input-block">
-                        <input type="radio" name="adminFlg" value="0" title="普通用户" checked="">
-                        <input type="radio" name="adminFlg" value="1" title="管理员">
+                        <input type="radio" name="adminFlg" value="0" title="普通用户">
+                        <input type="radio" name="adminFlg" value="1" title="管理员"  checked="">
                     </div>
                 </div>
 
@@ -166,7 +166,7 @@
 <script th:src="@{/layuimini/lib/layui-v2.6.3/layui.js}" charset="utf-8"></script>
 <script th:src="@{/layuimini/lib/jq-module/jquery.particleground.min.js}" charset="utf-8"></script>
 <script th:inline="javascript">
-    var ctxPath=[[${#httpServletRequest.getContextPath()}]];
+    var ctxPath = [[@{/}]];
         $("#captcha").click(function () {
             $("#captcha").attr("src", ctxPath + "captcha?date-" + new Date().getTime())
         });

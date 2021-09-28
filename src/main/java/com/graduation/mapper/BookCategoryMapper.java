@@ -5,6 +5,9 @@ import com.graduation.domain.param.BookCategoryParams;
 
 import java.util.List;
 
+/**
+ * 书籍类别Mapper
+ */
 public interface BookCategoryMapper {
     // 获取所有的书籍分类
     List<BookCategory> getAllBookCategories();
@@ -22,4 +25,6 @@ public interface BookCategoryMapper {
     void deleteBookCategoriesByIds(String categoryIds);
     // 根据类别名称获取书籍类别
     BookCategory getBookCategoryByCategoryName(String categoryName);
+    // 根据书籍类别信息获取书籍类别
+    BookCategory getBookCategoryByBookCategory(BookCategory bookCategory);
 }

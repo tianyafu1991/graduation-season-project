@@ -2,6 +2,9 @@ package com.graduation.domain;
 
 import lombok.Data;
 
+/**
+ * 书籍信息类
+ */
 @Data
 public class Book{
     // 自增id

@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * 借阅信息 与前端交互的Vo类
+ */
 @Data
 public class BorrowInfoVo implements Serializable {
     // 书籍编号

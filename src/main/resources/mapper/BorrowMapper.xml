@@ -26,7 +26,7 @@
 <sql id = "getBorrowInfoVosWhere">
 <where>
 1=1
-<if test="user.adminFlg !=1">
+<if test="user.adminFlg !='1'.toString()">
 and b.username = #{user.username}
 </if>
 <if test="params.bookNo != null and params.bookNo != ''">
@@ -44,12 +44,18 @@ and c.book_publish like '%' #{params.bookPublish} '%'
 <if test="params.bookCategory != null and params.bookCategory != ''">
 and d.category_id = #{params.bookCategory}
 </if>
-<if test="params.overDueFlg==1">
+<if test="params.startDate != null and params.startDate != ''">
+and a.borrow_time >= #{params.startDate}
+</if>
+<if test="params.endDate != null and params.endDate != ''">
+and a.borrow_time <![CDATA[ <= ]]> #{params.endDate}
+</if>
+<if test="params.overDueFlg=='1'.toString()">
 and a.return_flg = 0 and NOW() > return_time
 </if>
-    <if test="params.overDueFlg==0">
-        and ((a.return_flg = 0 and NOW() <![CDATA[ <= ]]>  return_time) or a.return_flg = 1)
-    </if>
+<if test="params.overDueFlg=='0'.toString()">
+and ((a.return_flg = 0 and NOW() <![CDATA[ <= ]]>  return_time) or a.return_flg = 1)
+</if>
 </where>
 </sql>
 

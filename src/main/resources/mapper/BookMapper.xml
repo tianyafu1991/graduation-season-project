@@ -2,38 +2,38 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.graduation.mapper.BookMapper">
 
-    <!-- 书籍对象映射 -->
-    <resultMap type="com.graduation.domain.Book" id="bookMap">
-        <id column="id" property="id"/>
-        <id column="book_no" property="bookNo"/>
-        <id column="book_name" property="bookName"/>
-        <id column="book_author" property="bookAuthor"/>
-        <id column="book_publish" property="bookPublish"/>
-        <id column="book_category" property="bookCategory"/>
-        <id column="book_price" property="bookPrice"/>
-        <id column="book_introduction" property="bookIntroduction"/>
-        <id column="category_name" property="categoryName"/>
-        <id column="create_time" property="createTime"/>
-        <id column="update_time" property="updateTime"/>
-    </resultMap>
+<!-- 书籍对象映射 -->
+<resultMap type="com.graduation.domain.Book" id="bookMap">
+<id column="id" property="id"/>
+<id column="book_no" property="bookNo"/>
+<id column="book_name" property="bookName"/>
+<id column="book_author" property="bookAuthor"/>
+<id column="book_publish" property="bookPublish"/>
+<id column="book_category" property="bookCategory"/>
+<id column="book_price" property="bookPrice"/>
+<id column="book_introduction" property="bookIntroduction"/>
+<id column="category_name" property="categoryName"/>
+<id column="create_time" property="createTime"/>
+<id column="update_time" property="updateTime"/>
+</resultMap>
 
-    <!-- 书籍对象映射 -->
-    <resultMap type="com.graduation.domain.BookWithBorrowFlg" id="bookWithBorrowFlgMap">
-        <id column="id" property="id"/>
-        <id column="book_no" property="bookNo"/>
-        <id column="book_name" property="bookName"/>
-        <id column="book_author" property="bookAuthor"/>
-        <id column="book_publish" property="bookPublish"/>
-        <id column="book_category" property="bookCategory"/>
-        <id column="book_price" property="bookPrice"/>
-        <id column="book_introduction" property="bookIntroduction"/>
-        <id column="category_name" property="categoryName"/>
-        <id column="create_time" property="createTime"/>
-        <id column="update_time" property="updateTime"/>
-        <id column="username" property="username"/>
-        <id column="borrow_flg" property="borrowFlg"/>
-    </resultMap>
-
+<!-- 书籍对象映射 -->
+<resultMap type="com.graduation.domain.BookWithBorrowFlg" id="bookWithBorrowFlgMap">
+<id column="id" property="id"/>
+<id column="book_no" property="bookNo"/>
+<id column="book_name" property="bookName"/>
+<id column="book_author" property="bookAuthor"/>
+<id column="book_publish" property="bookPublish"/>
+<id column="book_category" property="bookCategory"/>
+<id column="book_price" property="bookPrice"/>
+<id column="book_introduction" property="bookIntroduction"/>
+<id column="category_name" property="categoryName"/>
+<id column="create_time" property="createTime"/>
+<id column="update_time" property="updateTime"/>
+<id column="username" property="username"/>
+<id column="borrow_flg" property="borrowFlg"/>
+</resultMap>
+<!-- 获取书籍的动态where条件 -->
 <sql id = "getBooksWhere">
 <where>
 1=1
@@ -55,6 +55,7 @@ and a.book_category = #{bookCategory}
 </where>
 </sql>
 
+<!-- 根据用户名获取书籍列表的动态where条件 -->
 <sql id = "getBooksWithUsernameWhere">
 <where>
 1=1
@@ -76,32 +77,45 @@ and a.book_category = #{bookParams.bookCategory}
 </where>
 </sql>
 
-    <!-- 新增书籍 -->
-    <insert id="addBook">
-        insert into book(book_no,book_name,book_author,book_publish,book_category,book_price,book_introduction)
-        values(#{bookNo},#{bookName},#{bookAuthor},#{bookPublish},#{bookCategory},#{bookPrice},#{bookIntroduction})
-    </insert>
-    <update id="updateBook">
-        UPDATE book
-        <trim prefix="set" suffixOverrides=",">
-            <if test="bookNo!=null">book_no=#{bookNo},</if>
-            <if test="bookName!=null">book_name=#{bookName},</if>
-            <if test="bookAuthor!=null">book_author=#{bookAuthor},</if>
-            <if test="bookPublish!=null">book_publish=#{bookPublish},</if>
-            <if test="bookCategory!=null">book_category=#{bookCategory},</if>
-            <if test="bookPrice!=null">book_price=#{bookPrice},</if>
-            <if test="bookIntroduction!=null">book_introduction=#{bookIntroduction},</if>
-        </trim>
-        WHERE id=#{id}
+<!-- 根据用户名获取书籍列表时 如果是普通用户 要在查询borrow_info表时 带上这个查询条件 因为这里关联borrow_info这张表 只是为了获取当前用户是否已经借了该书且未归还 而管理员是要看到所有的借阅记 -->
+<sql id = "getBooksWithUsernameWhere2">
+<where>
+1=1
+<if test="user.adminFlg == '0'.toString()">
+user_id = #{user.id}
+</if>
+</where>
+</sql>
 
-    </update>
-    <delete id="deleteBooksByIds">
-        delete from book where id in (${ids})
-    </delete>
+<!-- 新增书籍 -->
+<insert id="addBook">
+insert into book(book_no,book_name,book_author,book_publish,book_category,book_price,book_introduction)
+values(#{bookNo},#{bookName},#{bookAuthor},#{bookPublish},#{bookCategory},#{bookPrice},#{bookIntroduction})
+</insert>
 
-    <select id="getBookLists" resultMap="bookMap">
+<!-- 根据传入的书籍信息 修改表中的信息 -->
+<update id="updateBook">
+UPDATE book
+<trim prefix="set" suffixOverrides=",">
+<if test="bookNo!=null">book_no=#{bookNo},</if>
+<if test="bookName!=null">book_name=#{bookName},</if>
+<if test="bookAuthor!=null">book_author=#{bookAuthor},</if>
+<if test="bookPublish!=null">book_publish=#{bookPublish},</if>
+<if test="bookCategory!=null">book_category=#{bookCategory},</if>
+<if test="bookPrice!=null">book_price=#{bookPrice},</if>
+<if test="bookIntroduction!=null">book_introduction=#{bookIntroduction},</if>
+</trim>
+WHERE id=#{id}
+
+</update>
+<!-- 根据传入的ids 删除对应的书籍 -->
+<delete id="deleteBooksByIds">
+delete from book where id in (${ids})
+</delete>
+<!-- 按照查询条件分页查询书籍 -->
+<select id="getBookLists" resultMap="bookMap">
 select
-    a.id,a.book_no,a.book_name,a.book_author,a.book_publish,a.book_price,a.book_introduction,b.category_name
+a.id,a.book_no,a.book_name,a.book_author,a.book_publish,a.book_price,a.book_introduction,b.category_name
 from
 book a
 inner join
@@ -111,6 +125,7 @@ on a.book_category = b.category_id
 order by a.update_time desc
 limit #{start},#{limit}
 </select>
+<!-- 按照查询条件 获取符合条件的所有数据的总数 -->
 <select id="getTotalCount" resultType="java.lang.Long">
 select
 count(1) cnt
@@ -121,6 +136,7 @@ book_category b
 on a.book_category = b.category_id
 <include refid="getBooksWhere"></include>
 </select>
+    <!-- 根据传入的id 获取对应的书籍 -->
 <select id="getBooksById" resultMap="bookMap">
 select
 a.id,a.book_no,a.book_name,a.book_author,a.book_publish,a.book_price,a.book_category,a.book_introduction,b.category_name
@@ -133,28 +149,81 @@ where a.id = #{id}
 </select>
 
 
-
+<!-- 普通用户 查询书籍列表 以及标记该本书用户当前是否已经借了且尚未归还 借了未归还的排前面 其它的按照书籍的更新时间倒序 -->
 <select id="getBookListsWithUser" resultMap="bookWithBorrowFlgMap">
 select
-t.id,t.book_no,t.book_name,t.book_author,t.book_publish,t.book_price,t.book_category,t.book_introduction,t.category_name
-,t.create_time,t.update_time,t.username,(case when t.username=#{username} and t.return_flg = 0 then 1 else 0 end ) borrow_flg
+t.id
+,t.book_no
+,t.book_name
+,t.book_author
+,t.book_publish
+,t.book_price
+,t.book_category
+,t.book_introduction
+,t.category_name
+,t.create_time
+,t.update_time
+,t.username
+,t.borrow_flg
 from
 (
 select
 a.id,a.book_no,a.book_name,a.book_author,a.book_publish,a.book_price,a.book_category,a.book_introduction,b.category_name
 ,a.create_time,a.update_time,d.username,c.return_flg
+,(case when c.return_flg = 0 then 1 else 0 end ) borrow_flg
 from
 book a
-inner join
+left join
 book_category b
 on a.book_category = b.category_id
-left join borrow_info c
+left join
+(
+select * from borrow_info
+where user_id = #{user.id}
+) c
 on a.id = c.book_id
 left join user d
 on c.user_id = d.id
 <include refid="getBooksWithUsernameWhere"></include>
-order by a.update_time desc
+order by borrow_flg desc, a.update_time desc
 limit #{bookParams.start},#{bookParams.limit}
 ) t
 </select>
+<!-- 根据书的编号获取书籍信息 -->
+<select id="getBookByBookNo" resultMap="bookMap">
+select
+id
+,book_no
+,book_name
+,book_author
+,book_publish
+,book_category
+,book_price
+,book_introduction
+from
+book
+where
+1=1
+and book_no = #{bookNo}
+</select>
+<!-- 根据书籍信息获取书籍 -->
+<select id="getBookByBook" resultType="com.graduation.domain.Book">
+select
+id
+,book_no
+,book_name
+,book_author
+,book_publish
+,book_category
+,book_price
+,book_introduction
+from
+book
+where
+1=1
+and book_no = #{bookNo}
+and id != #{id}
+</select>
+
+
 </mapper>

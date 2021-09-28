@@ -48,12 +48,12 @@ spring:
 #    encoding: UTF-8
 #    check-template-location: true
 
-mybatis:
-  mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: com.graduation.domain
-  configuration:
-    map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#mybatis:
+#  mapper-locations: classpath:mapper/*.xml
+#  type-aliases-package: com.graduation.domain
+#  configuration:
+#    map-underscore-to-camel-case: true
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 # 日志配置
 logging:
@@ -63,3 +63,10 @@ logging:
 
 swagger:
   show: true
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.graduation.domain
+  configuration:
+    map-underscore-to-camel-case: true
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

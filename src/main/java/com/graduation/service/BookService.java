@@ -3,11 +3,15 @@ package com.graduation.service;
 import com.graduation.domain.Book;
 import com.graduation.domain.BookCategory;
 import com.graduation.domain.BookWithBorrowFlg;
+import com.graduation.domain.User;
 import com.graduation.domain.param.BookCategoryParams;
 import com.graduation.domain.param.BookParams;
 
 import java.util.List;
 
+/**
+ * 书籍及书籍类别相关的service接口
+ */
 public interface BookService {
     /**
      * 按照查询条件分页查询书籍
@@ -99,10 +103,10 @@ public interface BookService {
     /**
      * 查询书籍列表 以及标记该本书用户当前是否已经借了且尚未归还
      * @param bookParams
-     * @param username
+     * @param user
      * @return
      */
-    List<BookWithBorrowFlg> getBookListsWithUser(BookParams bookParams,String username);
+    List<BookWithBorrowFlg> getBookListsWithUser(BookParams bookParams, User user);
 
     /**
      * 根据类别名称获取书籍类别
@@ -111,4 +115,25 @@ public interface BookService {
      * @return
      */
     BookCategory getBookCategoryByCategoryName(String categoryName);
+
+    /**
+     * 根据书的编号获取书籍信息
+     * @param bookNo
+     * @return
+     */
+    Book getBookByBookNo(String bookNo);
+
+    /**
+     * 根据书籍类别信息获取书籍类别
+     * @param bookCategory
+     * @return
+     */
+    BookCategory getBookCategoryByBookCategory(BookCategory bookCategory);
+
+    /**
+     * 根据书籍信息获取书籍
+     * @param book
+     * @return
+     */
+    Book getBookByBook(Book book);
 }

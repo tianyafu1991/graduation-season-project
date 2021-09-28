@@ -82,4 +82,8 @@ and a.id = #{id}
     <select id="getUserByUserName" resultMap="userMap">
         select * from user where username = #{username}
     </select>
+    <!-- 根据用户信息查询用户 -->
+    <select id="getUserByUser" resultMap="userMap">
+        select * from user where username = #{username} and id != #{id}
+    </select>
 </mapper>

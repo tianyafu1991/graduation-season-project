@@ -8,6 +8,11 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistration
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * config类  用于配置拦截器 配置拦截请求和需放行请求
+ * 一般为登录页 验证码  前端静态资源是需要放行的
+ * 其它都需要拦截 目前拦截主要是判断session中是否有用户信息 以此作为是否登录的依据
+ */
 @Configuration
 public class GraduationWebConfig implements WebMvcConfigurer {
 

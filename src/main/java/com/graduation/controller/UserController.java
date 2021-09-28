@@ -69,9 +69,21 @@ public class UserController {
         return response;
     }
 
+    /**
+     * 新增用户
+     * @param user
+     * @return
+     */
     @PostMapping("/addUser")
     @ResponseBody
     public CommonResponse<User> addUser(User user){
+        if(null == user || StrUtil.isBlank(user.getUsername())){
+            return CommonResponse.errorInstance("参数传参错误");
+        }
+        User userByUserName = userService.getUserByUserName(user.getUsername());
+        if(null != userByUserName){
+            return CommonResponse.errorInstance("该用户名已存在 请重新输入");
+        }
         User userInfo = userService.addUser(user);
         return CommonResponse.successInstance(userInfo,null);
     }
@@ -96,6 +108,13 @@ public class UserController {
     @PutMapping("/updateUser")
     @ResponseBody
     public CommonResponse<User> updateUser(User user){
+        if(null == user ||null == user.getId() || StrUtil.isBlank(user.getUsername())){
+            return CommonResponse.errorInstance("参数传参错误");
+        }
+        User userByUserName = userService.getUserByUser(user);
+        if(null != userByUserName){
+            return CommonResponse.errorInstance("该用户名已存在 请重新输入");
+        }
         userService.updateUser(user);
         return CommonResponse.successInstance("修改成功");
     }

@@ -9,6 +9,9 @@ import org.springframework.security.core.parameters.P;
 
 import java.util.List;
 
+/**
+ * 借阅Mapper
+ */
 public interface BorrowMapper {
     // 借书
     void borrowBookByBorrowInfo(BorrowInfo borrowInfo);

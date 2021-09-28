@@ -116,6 +116,13 @@
             <a class="layui-btn layui-btn-xs" lay-event="return_book">还书</a>
             {{#  } }}
 
+            <!-- 逾期标记 0未逾期  1已逾期  该标记仅针对未归还的书籍有效 -->
+<!--            {{#  if(d.overDueFlg == 1){ }}-->
+<!--            <a class="layui-btn layui-btn-xs" lay-event="pay-off">清缴费用</a>-->
+<!--            {{#  } else { }}-->
+<!--            <a class="layui-btn layui-btn-xs  layui-btn-disabled" lay-event="">清缴费用</a>-->
+<!--            {{#  } }}-->
+
         </script>
 
     </div>
@@ -163,14 +170,13 @@
                 , {field: 'returnTime', title: '需要还书的时间', width: 60, sort: true, align: 'center', hide: true}
                 , {field: 'returnFlg', title: '归还标记', width: 60, sort: true, align: 'center', hide: true}
                 , {field: 'overDueFlg', title: '逾期标记', width: 60, sort: true, align: 'center', hide: true}
-                , {field: 'username', title: '用户名', width: 60, sort: true, align: 'center', hide: true}
-
                 , {field: 'bookNo', title: '编号', width: 120, sort: true, align: 'center'}
                 , {field: 'bookName', title: '书名', width: 300, align: 'center'}
                 , {field: 'bookAuthor', title: '作者', width: 200, sort: true, align: 'center'}
                 , {field: 'bookPublish', title: '出版社', width: 120, align: 'center'}
                 , {field: 'categoryName', title: '分类', width: 100, sort: true, align: 'center'}
                 , {field: 'bookPrice', title: '价格', width: 100, align: 'center'}
+                , {field: 'username', title: '用户名', width: 120, sort: true, align: 'center'}
                 , {field: 'borrowTime', title: '借书时间', width: 200, align: 'center'}
                 , {field: 'realReturnTime', title: '还书时间', width: 200, align: 'center'}
                 , {field: 'overDueCost', title: '逾期计费', width: 60, align: 'center'}
@@ -316,20 +322,39 @@
 
                     // layer.close(index);
                 });
-            } else if (layEvent == 'edit') {
-//拿到的index是一个重要的凭据，它是诸如layer.close(index)等方法的必传参数。
-                var index = layer.open({
-                    title: '编辑书籍',
-                    type: 2,
-                    shade: 0.2,
-                    maxmin: true,
-                    shadeClose: false,
-                    area: ['100%', '100%'],
-                    content: ctxPath + 'book/adminEditBook/' + data.id,
+            } else if (layEvent == 'pay-off') {
+                layer.confirm('您即将清缴该书籍:' + data.bookName + '的逾期费用', {icon: 3, title: '清缴确认'}, function (index) {
+                    //do something
+                    // var url = ctxPath + 'borrow/returnBookById/' + data.bookId + '/' + username;
+                    // var params = {
+                    //     _method: "PUT"
+                    // }
+                    // // 异步请求到后端 后端返回后 需要刷新表格
+                    // $.post(url, params, function (response) {
+                    //     if (0 == response.code) {
+                    //         layer.msg(response.msg, {icon: 1});
+                    //         refreshTable();
+                    //     } else {
+                    //         layer.alert(response.msg, {icon: 2, anim: 6});
+                    //     }
+                    //
+                    // });
+
+                    // layer.close(index);
                 });
-                $(window).on("resize", function () {
-                    layer.full(index);
-                });
+                //拿到的index是一个重要的凭据，它是诸如layer.close(index)等方法的必传参数。
+                // var index = layer.open({
+                //     title: '编辑书籍',
+                //     type: 2,
+                //     shade: 0.2,
+                //     maxmin: true,
+                //     shadeClose: false,
+                //     area: ['100%', '100%'],
+                //     content: ctxPath + 'book/adminEditBook/' + data.id,
+                // });
+                // $(window).on("resize", function () {
+                //     layer.full(index);
+                // });
             }
         });
 

@@ -5,6 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 通用返回值  字段名不能更改  有些是layui要求的返回值字段
+ * @param <T>
+ */
 @Data
 public class CommonResponse<T>{
     // 返回状态码 0表示成功
@@ -26,6 +30,11 @@ public class CommonResponse<T>{
         this.count = count;
     }
 
+    /**
+     * 返回成功
+     * @param <T>
+     * @return
+     */
     public static <T> CommonResponse successInstance(){
         CommonResponse commonResponse = new CommonResponse();
         commonResponse.setCode(StatusCode.OPERATION_SUCCESS.getCode());
@@ -35,6 +44,11 @@ public class CommonResponse<T>{
         return commonResponse;
     }
 
+    /**
+     * 返回成功 及 成功消息
+     * @param <T>
+     * @return
+     */
     public static <T> CommonResponse successInstance(String msg){
         CommonResponse commonResponse = new CommonResponse();
         commonResponse.setCode(StatusCode.OPERATION_SUCCESS.getCode());
@@ -44,6 +58,11 @@ public class CommonResponse<T>{
         return commonResponse;
     }
 
+    /**
+     * 返回成功 返回数据及总数
+     * @param <T>
+     * @return
+     */
     public static <T> CommonResponse successInstance(T data,Long count){
         CommonResponse commonResponse = new CommonResponse();
         commonResponse.setCode(StatusCode.OPERATION_SUCCESS.getCode());
@@ -53,6 +72,11 @@ public class CommonResponse<T>{
         return commonResponse;
     }
 
+    /**
+     * 返回失败
+     * @param <T>
+     * @return
+     */
     public static <T> CommonResponse errorInstance(){
         CommonResponse commonResponse = new CommonResponse();
         commonResponse.setCode(StatusCode.OPERATION_ERROR.getCode());
@@ -62,6 +86,11 @@ public class CommonResponse<T>{
         return commonResponse;
     }
 
+    /**
+     * 返回失败 及 error消息
+     * @param <T>
+     * @return
+     */
     public static <T> CommonResponse errorInstance(String msg){
         CommonResponse commonResponse = new CommonResponse();
         commonResponse.setCode(StatusCode.OPERATION_ERROR.getCode());

@@ -5,6 +5,9 @@ import com.graduation.domain.param.UserParams;
 
 import java.util.List;
 
+/**
+ * 用户Mapper
+ */
 public interface UserMapper {
 
 
@@ -23,4 +26,6 @@ public interface UserMapper {
     User getUserById(Integer id);
     // 根据用户名查询用户
     User getUserByUserName(String username);
+    // 根据用户信息查询用户
+    User getUserByUser(User user);
 }

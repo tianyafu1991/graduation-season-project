@@ -10,7 +10,7 @@
 </head>
 <body>
 <div class="layui-form layuimini-form" th:object="${book}">
-
+    <form class="layui-form layui-form-pane" id="search-form" action="">
     <div class="layui-form-item" id="form-display-none-id">
         <label class="layui-form-label required">id</label>
         <div class="layui-input-block">
@@ -74,6 +74,7 @@
             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
         </div>
     </div>
+    </form>
 
     <!--<div class="layui-form-item">
         <div class="layui-input-block">

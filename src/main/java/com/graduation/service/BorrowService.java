@@ -6,7 +6,9 @@ import com.graduation.domain.User;
 import com.graduation.domain.param.BorrowParams;
 
 import java.util.List;
-
+/**
+ * 借阅相关的service接口
+ */
 public interface BorrowService {
     /**
      * 借书
