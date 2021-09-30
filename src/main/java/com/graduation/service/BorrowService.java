@@ -40,4 +40,10 @@ public interface BorrowService {
      * @param user
      */
     void returnBookById(Integer bookId, User user);
+
+    /**
+     * 按照用户id和书籍id查询这个人的这本书的借阅信息
+     * @return
+     */
+    BorrowInfoVo selectBorrowInfoByBookIdAndUserId();
 }

@@ -73,7 +73,7 @@ public class BorrowController {
     }
 
     /**
-     * 借书
+     * 还书
      * @param bookId
      * @param username
      * @return
@@ -83,6 +83,7 @@ public class BorrowController {
     public CommonResponse<BorrowInfo> returnBookById(@PathVariable Integer bookId, @PathVariable String username){
         User user = userService.getUserByUserName(username);
         System.out.println("bookId:" + bookId + " username: "+ username);
+        BorrowInfoVo borrowInfo = borrowService.selectBorrowInfoByBookIdAndUserId();
         borrowService.returnBookById(bookId,user);
         return CommonResponse.successInstance("还书成功");
     }
