@@ -110,7 +110,7 @@
 
             <!-- 这里同样支持 laytpl 语法，如： -->
             <!-- 归还标记 0未归还  1已归还 已逾期的是不能由普通用户自己还书的 需要到管理员处清缴费用后才能还书-->
-            {{#  if(d.returnFlg == 1 && d.overDueFlg != 1){ }}
+            {{#  if(d.returnFlg == 1 || d.overDueFlg == 1){ }}
             <a class="layui-btn layui-btn-xs  layui-btn-disabled" lay-event="">还书</a>
             {{#  } else { }}
             <a class="layui-btn layui-btn-xs" lay-event="return_book">还书</a>

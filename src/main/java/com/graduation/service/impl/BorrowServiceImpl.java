@@ -28,6 +28,7 @@ public class BorrowServiceImpl implements BorrowService {
      */
     @Override
     public BorrowInfoVo selectBorrowInfoByBookIdAndUserId() {
+        // 该方法暂时没用
         return null;
     }
 
